@@ -1,0 +1,18 @@
+{
+  "name": "FileDistributorWeb",
+  "version": "1.0.0",
+  "description": "File Distribute Platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build"
+  },
+  "keywords": [],
+  "author": "MrHeer",
+  "license": "ISC",
+  "devDependencies": {
+    "ant-design-pro": "^2.2.1",
+    "umi": "^2.4.4",
+    "umi-plugin-react": "^1.4.2"
+  }
+}
