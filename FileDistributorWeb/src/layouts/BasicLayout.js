@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import DocumentTitle from 'react-document-title';
 import { Layout, Menu, Icon, Row, Col, Button } from 'antd';
 import { Link } from 'umi';
 import { FormattedMessage, formatMessage, getLocale, setLocale } from 'umi/locale';
+import DocumentTitle from 'react-document-title';
 
 const { Header, Content, Footer } = Layout;
 
@@ -16,8 +16,8 @@ class BasicLayout extends Component {
         } else {
             setLocale('zh-CN');
         }
-    }
-    
+   }
+
     render() {
         return (
             <Layout className="layout">
