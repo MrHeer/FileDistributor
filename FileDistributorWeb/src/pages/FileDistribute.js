@@ -1,5 +1,11 @@
 import { Component } from 'react';
-import { Row, Col, Card, Upload, Button, Icon, Pagination } from 'antd';
+import { Row,
+         Col,
+         Card,
+         Upload,
+         Button,
+         Icon
+       } from 'antd';
 import { formatMessage } from 'umi/locale';
 
 class FileDistribute extends Component {
