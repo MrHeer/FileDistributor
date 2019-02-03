@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Row, Col, Card, Upload, Button, Icon, Pagination } from 'antd';
-import { formatMessage } from 'umi/locale';
+import { formatMessage, FormattedMessage } from 'umi/locale';
 
 class FileDistribute extends Component {
     state = {
@@ -54,7 +54,7 @@ class FileDistribute extends Component {
                   style={{ height: 600 }}>
                   <Upload {...props} fileList={this.state.fileList}>
                     <Button>
-                      <Icon type="upload" /> Upload
+                      <Icon type="upload" /> <FormattedMessage id="upload" />
                     </Button>
                   </Upload>
                 </Card>

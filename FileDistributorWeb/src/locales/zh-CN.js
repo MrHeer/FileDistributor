@@ -5,5 +5,6 @@ export default {
     language: 'English',
     chose_file: '上传文件',
     chose_host: '选择主机',
-    distribute_file: '分发文件'
+    distribute_file: '分发文件',
+    upload: '上传'
 }

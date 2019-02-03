@@ -5,5 +5,6 @@ export default {
     language: '中文',
     chose_file: 'Upload File',
     chose_host: 'Chose Host',
-    distribute_file: 'Distribute File'
+    distribute_file: 'Distribute File',
+    upload: 'Upload'
 }
