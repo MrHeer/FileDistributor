@@ -5,5 +5,8 @@ export default {
     language: 'English',
     chose_file: '上传文件',
     chose_host: '选择主机',
-    distribute_file: '分发文件'
+    distribute_file: '分发文件',
+    distribute: '分发',
+    remote_path: '远程路径...',
+    checked: '所选主机'
 }
