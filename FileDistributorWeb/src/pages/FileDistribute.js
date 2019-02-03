@@ -129,7 +129,7 @@ class FileDistribute extends Component {
                   style={{ height: 600 }}>
                   <Upload {...props} fileList={this.state.fileList}>
                     <Button>
-                      <Icon type="upload" /> Upload
+                      <Icon type="upload" /> <FormattedMessage id="upload" />
                     </Button>
                   </Upload>
                 </Card>

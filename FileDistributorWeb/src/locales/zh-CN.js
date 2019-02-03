@@ -8,5 +8,6 @@ export default {
     distribute_file: '分发文件',
     distribute: '分发',
     remote_path: '远程路径...',
-    checked: '所选主机'
+    checked: '所选主机',
+    upload: '上传'
 }
