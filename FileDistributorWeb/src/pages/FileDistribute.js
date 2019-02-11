@@ -7,8 +7,11 @@ import { Row,
          Icon,
          Tree,
          Input,
-         List
+         List,
+         Spin,   //Scroller
+         message
        } from 'antd';
+import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 const { TreeNode } = Tree;
 
@@ -44,7 +47,11 @@ class FileDistribute extends Component {
                     {title: 'Host-9',key: 'H-9'},
                 ]
             }],
-        listData: []
+
+        listData: [],
+        loading: false,
+        hasMore: true,
+
     }
 
     handleChange = (info) => {
@@ -73,7 +80,7 @@ class FileDistribute extends Component {
 
         this.setState({ fileList });
     }
-
+    
     onExpand = (expandedKeys) => {
         console.log('onExpand', expandedKeys);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -86,10 +93,13 @@ class FileDistribute extends Component {
 
     onCheck = (checkedKeys) => {
         console.log('onCheck', checkedKeys);
+        //new String(checkedstring);
+        //checkedstring=checkedKeys;
         this.setState({ checkedKeys });
-        this.setState({
-            listData: checkedKeys
-        });
+        //if(checkedKeys.charAt(0) == 'H')//add logical judgment about only children tree inserting into listData by Zhongnibug
+          this.setState({
+              listData: checkedKeys
+          });
     }
 
     onSelect = (selectedKeys, info) => {
@@ -112,6 +122,24 @@ class FileDistribute extends Component {
         return (
             <List.Item>{item}</List.Item>
         );
+    }
+
+    //Scroller 
+     handleInfiniteOnLoad = () => {
+      let listData = this.state.listData;
+      let checkedKeys=this.state.checkedKeys;
+
+      this.setState({
+        loading: true,
+      });
+      if (listData.length == checkedKeys.length ) {
+        message.warning('Infinite List loaded all');
+        this.setState({
+          hasMore: false,
+          loading: false,
+        });
+        return;
+      }
     }
 
     render() {
@@ -156,16 +184,42 @@ class FileDistribute extends Component {
                 <Card
                   title={ formatMessage({id: 'distribute_file'}) }
                   style={{ height: 600 }}>
-                  <Row>
-                    <Col>
-                      <List
-                        style={{ height: 400 }}
-                        size="small"
-                        header={ formatMessage({id: 'checked'}) }
-                        bordered
-                        dataSource={ this.state.listData }
-                        renderItem={ this.renderList }/>
-                    </Col>
+                  <Row
+                  style={{ height: 400 }}>
+                  { formatMessage({id: 'checked'}) }
+                    <div 
+                      style={{
+                          border: '1px solid #e8e8e8',
+                          borderRadius: '4px',
+                          overflow: 'auto',
+                          padding: '8px 24px',
+                          height: '300px',}}
+                    >
+                      <InfiniteScroll  
+                        initialLoad={false}
+                        pageStart={0}
+                        loadMore={this.handleInfiniteOnLoad}
+                        hasMore={!this.state.loading && this.state.hasMore}
+                        useWindow={false}
+                      >
+ 
+                        <List
+                          size="small"
+                          bordered
+                          dataSource={ this.state.listData }
+                          renderItem={ this.renderList }>
+                          {this.state.loading && this.state.hasMore && (
+                            <div style={{
+                                  bottom: '40px',
+                                  width: '100%',
+                            }}
+                            >
+                              <Spin />
+                            </div>
+                          )}
+                        </List>
+                      </InfiniteScroll> 
+                    </div>
                   </Row>
                   <Row style={{ marginTop: 20, marginBottom: 20 }}>
                     <Col><Input placeholder={ formatMessage({id: 'remote_path'})} /></Col>
