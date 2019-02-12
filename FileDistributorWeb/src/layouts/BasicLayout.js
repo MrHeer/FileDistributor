@@ -48,7 +48,7 @@ class BasicLayout extends Component {
                 </Row>
               </Header>
               <Content  style={{ margin: '24px 16px 0' }}>
-                <div style={{ padding: 24, background: '#fff', minHeight: 560 }}>
+                <div style={{ padding: 24, background: '#fff'}}>
                   { this.props.children }
                 </div>
               </Content>
