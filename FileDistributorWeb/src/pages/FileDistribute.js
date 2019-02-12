@@ -9,10 +9,10 @@ import { Row,
          Input,
          List,
          Spin,   //Scroller
-         message
        } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';
+import { message } from 'antd';
 const { TreeNode } = Tree;
 
 class FileDistribute extends Component {
@@ -27,6 +27,7 @@ class FileDistribute extends Component {
         autoExpandParent: true,
         checkedKeys: [],
         selectedKeys: [],
+        parentKeys:[],
         treeData: [{
             title: 'Group-0',
             key: 'G-0',
@@ -47,11 +48,14 @@ class FileDistribute extends Component {
                     {title: 'Host-9',key: 'H-9'},
                 ]
             }],
-
         listData: [],
-        loading: false,
-        hasMore: true,
 
+        //listscroller
+        listLoading: false,
+        listHasMore: true,
+        //treescroller
+        treeLoading: false,
+        treeHasMore: true,
     }
 
     handleChange = (info) => {
@@ -92,20 +96,35 @@ class FileDistribute extends Component {
     }
 
     onCheck = (checkedKeys) => {
+        const { parentKeys }=this.state;
         console.log('onCheck', checkedKeys);
-        //new String(checkedstring);
-        //checkedstring=checkedKeys;
-        this.setState({ checkedKeys });
-        //if(checkedKeys.charAt(0) == 'H')//add logical judgment about only children tree inserting into listData by Zhongnibug
-          this.setState({
-              listData: checkedKeys
-          });
+        this.setState({ 
+          checkedKeys,
+        });
+
+        //logical judgment about only inserting leaf into listData
+        var noParentKeys = [];
+        for(var i in checkedKeys)
+          if(!parentKeys.includes(checkedKeys[i]))
+            noParentKeys.push(checkedKeys[i]);
+        this.setState({
+          listData: noParentKeys,
+          selectedKeys:noParentKeys,
+        });
     }
 
     onSelect = (selectedKeys, info) => {
         console.log('onSelect', info);
         this.setState({ selectedKeys });
     }
+    
+    //choose the keys of parent treenode  
+    judgeTreeNodes = (data) => {
+      var result = [];
+      for(var i in data)
+        result.push(data[i].key);
+      return result;
+  }
 
     renderTreeNodes = data => data.map((item) => {
         if (item.children) {
@@ -124,29 +143,46 @@ class FileDistribute extends Component {
         );
     }
 
-    //Scroller 
-     handleInfiniteOnLoad = () => {
+    //listScroller 
+     listInfiniteOnLoad = () => {
       let listData = this.state.listData;
-      let checkedKeys=this.state.checkedKeys;
-
       this.setState({
-        loading: true,
+        listLoading: true,
       });
-      if (listData.length == checkedKeys.length ) {
-        message.warning('Infinite List loaded all');
+      if (listData.length >4 ) {
         this.setState({
-          hasMore: false,
-          loading: false,
+          listHasMore: false,
+          listLoading: false,
         });
         return;
       }
+    }
+
+    //treeScroller
+    treeInfiniteOnLoad = () => {
+      let treeData = this.state.treeData;
+      this.setState({
+        treeLoading: true,
+      });
+      if (treeData.length >2 ) {
+        this.setState({
+          listHasMore: false,
+          listLoading: false,
+        });
+        return;
+      }
+    }
+
+    componentDidMount(){
+      //inserting the keys of parent treenode into parentKeys
+      this.state.parentKeys = this.judgeTreeNodes(this.state.treeData);
     }
 
     render() {
         const props = {
             action: '//jsonplaceholder.typicode.com/posts/',
             onChange: this.handleChange,
-            multiple: true
+            multiple: true,
         };
 
         return (
@@ -154,7 +190,10 @@ class FileDistribute extends Component {
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'chose_file'}) }
-                  style={{ height: 600 }}>
+                  style={{
+                    marginBottom: 15,
+                  }} 
+                  >
                   <Upload {...props} fileList={this.state.fileList}>
                     <Button>
                       <Icon type="upload" /> <FormattedMessage id="upload" />
@@ -165,27 +204,51 @@ class FileDistribute extends Component {
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'chose_host'}) }
-                  style={{ height: 600 }}>
-                  <Tree
-                    checkable
-                    onExpand={ this.onExpand }
-                    expandedKeys={ this.state.expandedKeys }
-                    autoExpandParent={ this.state.autoExpandParent }
-                    onCheck={ this.onCheck }
-                    checkedKeys={ this.state.checkedKeys }
-                    onSelect={ this.onSelect }
-                    selectedKeys={ this.state.selectedKeys }
+                  style={{
+                    marginBottom: 15,
+                  }} 
+                  >
+                  <div
+                    style={{
+                      border: '1px solid #e8e8e8',
+                      borderRadius: '4px',
+                      overflow: 'auto',
+                      padding: '8px 24px',
+                      height: '250px',}}
+                  >
+                   <InfiniteScroll  
+                        initialLoad={false}
+                        pageStart={0}
+                        loadMore={this.treeInfiniteOnLoad}
+                        hasMore={!this.state.treeLoading && this.state.treeHasMore}
+                        useWindow={false}
                     >
-                    { this.renderTreeNodes(this.state.treeData) }
-                  </Tree>
+                    <div></div>
+                      <Tree
+                        multiple={true}
+                        checkable
+                        onExpand={ this.onExpand }
+                        expandedKeys={ this.state.expandedKeys }
+                        autoExpandParent={ this.state.autoExpandParent }
+                        onCheck={ this.onCheck }
+                        checkedKeys={ this.state.checkedKeys }
+                        onSelect={ this.onSelect }
+                        selectedKeys={ this.state.selectedKeys }
+                        >
+                        { this.renderTreeNodes(this.state.treeData) }
+                      </Tree>
+                    </InfiniteScroll> 
+                  </div>
                 </Card>
               </Col>
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'distribute_file'}) }
-                  style={{ height: 600 }}>
-                  <Row
-                  style={{ height: 400 }}>
+                  style={{
+                    marginBottom: 15,
+                  }} 
+                  >
+                  <Row>
                   { formatMessage({id: 'checked'}) }
                     <div 
                       style={{
@@ -193,22 +256,21 @@ class FileDistribute extends Component {
                           borderRadius: '4px',
                           overflow: 'auto',
                           padding: '8px 24px',
-                          height: '300px',}}
+                          height: '200px',}}
                     >
                       <InfiniteScroll  
                         initialLoad={false}
                         pageStart={0}
-                        loadMore={this.handleInfiniteOnLoad}
-                        hasMore={!this.state.loading && this.state.hasMore}
+                        loadMore={this.listInfiniteOnLoad}
+                        hasMore={!this.state.listLoading && this.state.listHasMore}
                         useWindow={false}
                       >
- 
                         <List
                           size="small"
                           bordered
                           dataSource={ this.state.listData }
                           renderItem={ this.renderList }>
-                          {this.state.loading && this.state.hasMore && (
+                          {this.state.listLoading && this.state.listHasMore && (
                             <div style={{
                                   bottom: '40px',
                                   width: '100%',
