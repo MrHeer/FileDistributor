@@ -34,7 +34,7 @@ class FileDistribute extends Component {
             children: [
                 {title: 'Host-0',key: 'H-0'},
                 {title: 'Host-1',key: 'H-1'},
-                {title: 'Host-2',key: 'H-2'},
+                {title: 'Host-2',key: 'H-2'}
             ]},{
                 title: 'Group-1',
                 key: 'G-1',
@@ -46,6 +46,12 @@ class FileDistribute extends Component {
                     {title: 'Host-7',key: 'H-7'},
                     {title: 'Host-8',key: 'H-8'},
                     {title: 'Host-9',key: 'H-9'},
+                    {title: 'Host-10',key: 'H-10'},
+                    {title: 'Host-11',key: 'H-11'},
+                    {title: 'Host-12',key: 'H-12'},
+                    {title: 'Host-13',key: 'H-13'},
+                    {title: 'Host-14',key: 'H-14'},
+                    {title: 'Host-15',key: 'H-15'}
                 ]
             }],
         listData: [],
@@ -84,7 +90,7 @@ class FileDistribute extends Component {
 
         this.setState({ fileList });
     }
-    
+
     onExpand = (expandedKeys) => {
         console.log('onExpand', expandedKeys);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
@@ -98,7 +104,7 @@ class FileDistribute extends Component {
     onCheck = (checkedKeys) => {
         const { parentKeys }=this.state;
         console.log('onCheck', checkedKeys);
-        this.setState({ 
+        this.setState({
           checkedKeys,
         });
 
@@ -117,8 +123,8 @@ class FileDistribute extends Component {
         console.log('onSelect', info);
         this.setState({ selectedKeys });
     }
-    
-    //choose the keys of parent treenode  
+
+    //choose the keys of parent treenode
     judgeTreeNodes = (data) => {
       var result = [];
       for(var i in data)
@@ -143,7 +149,7 @@ class FileDistribute extends Component {
         );
     }
 
-    //listScroller 
+    //listScroller
      listInfiniteOnLoad = () => {
       let listData = this.state.listData;
       this.setState({
@@ -190,9 +196,7 @@ class FileDistribute extends Component {
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'chose_file'}) }
-                  style={{
-                    marginBottom: 15,
-                  }} 
+                  style={{ height: 520 }}
                   >
                   <Upload {...props} fileList={this.state.fileList}>
                     <Button>
@@ -204,26 +208,21 @@ class FileDistribute extends Component {
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'chose_host'}) }
-                  style={{
-                    marginBottom: 15,
-                  }} 
+                  style={{ height: 520 }}
                   >
                   <div
                     style={{
-                      border: '1px solid #e8e8e8',
-                      borderRadius: '4px',
-                      overflow: 'auto',
-                      padding: '8px 24px',
-                      height: '250px',}}
-                  >
-                   <InfiniteScroll  
-                        initialLoad={false}
-                        pageStart={0}
-                        loadMore={this.treeInfiniteOnLoad}
-                        hasMore={!this.state.treeLoading && this.state.treeHasMore}
-                        useWindow={false}
+                        overflow: 'auto',
+                        height: 420
+                    }}
                     >
-                    <div></div>
+                    <InfiniteScroll
+                      initialLoad={false}
+                      pageStart={0}
+                      loadMore={this.treeInfiniteOnLoad}
+                      hasMore={!this.state.treeLoading && this.state.treeHasMore}
+                      useWindow={false}
+                      >
                       <Tree
                         multiple={true}
                         checkable
@@ -244,44 +243,46 @@ class FileDistribute extends Component {
               <Col span={8}>
                 <Card
                   title={ formatMessage({id: 'distribute_file'}) }
-                  style={{
-                    marginBottom: 15,
-                  }} 
+                  style={{ height: 520 }}
                   >
                   <Row>
-                  { formatMessage({id: 'checked'}) }
-                    <div 
-                      style={{
-                          border: '1px solid #e8e8e8',
-                          borderRadius: '4px',
-                          overflow: 'auto',
-                          padding: '8px 24px',
-                          height: '200px',}}
-                    >
-                      <InfiniteScroll  
-                        initialLoad={false}
-                        pageStart={0}
-                        loadMore={this.listInfiniteOnLoad}
-                        hasMore={!this.state.listLoading && this.state.listHasMore}
-                        useWindow={false}
-                      >
-                        <List
-                          size="small"
-                          bordered
-                          dataSource={ this.state.listData }
-                          renderItem={ this.renderList }>
-                          {this.state.listLoading && this.state.listHasMore && (
-                            <div style={{
-                                  bottom: '40px',
-                                  width: '100%',
-                            }}
-                            >
-                              <Spin />
-                            </div>
-                          )}
-                        </List>
-                      </InfiniteScroll> 
-                    </div>
+                    <Col>{ formatMessage({id: 'checked'}) }</Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <div
+                        style={{
+                            overflow: 'auto',
+                            height: 300
+                        }}
+                        >
+                        <InfiniteScroll
+                          initialLoad={false}
+                          pageStart={0}
+                          loadMore={this.listInfiniteOnLoad}
+                          hasMore={!this.state.listLoading && this.state.listHasMore}
+                          useWindow={false}
+                          >
+                          <List
+                            size="small"
+                            bordered
+                            dataSource={ this.state.listData }
+                            renderItem={ this.renderList }>
+                            {this.state.listLoading && this.state.listHasMore && (
+                                <div style={{
+                                         position: 'absolute',
+                                         bottom: 40,
+                                         width: '100%',
+                                         textAlign: 'center'
+                                     }}
+                                     >
+                                  <Spin />
+                                </div>
+                            )}
+                          </List>
+                        </InfiniteScroll>
+                      </div>
+                    </Col>
                   </Row>
                   <Row style={{ marginTop: 20, marginBottom: 20 }}>
                     <Col><Input placeholder={ formatMessage({id: 'remote_path'})} /></Col>
