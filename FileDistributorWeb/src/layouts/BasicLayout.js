@@ -20,7 +20,7 @@ class BasicLayout extends Component {
 
     render() {
         return (
-            <Layout className="layout">
+            <Layout>
               <DocumentTitle title={ formatMessage({id: 'project_name'}) }/>
               <Header style={{ background: '#fff' }}>
                 <Row>
@@ -48,7 +48,11 @@ class BasicLayout extends Component {
                 </Row>
               </Header>
               <Content  style={{ margin: '24px 16px 0' }}>
-                <div style={{ padding: 24, background: '#fff'}}>
+                <div style={{
+                         height: 580,
+                         padding: 24,
+                         background: '#fff'
+                     }}>
                   { this.props.children }
                 </div>
               </Content>
