@@ -1,35 +1,80 @@
 import { Component } from 'react';
 import {
-    Table, Radio, Form, Divider
+    Table, Form, Divider, Row, Col, Button, Icon, Popconfirm
 } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 
 const FormItem = Form.Item;
 
 const data = [];
-for (let i = 1; i <= 10; i++) {
+for (let i = 1; i <= 60; i++) {
     data.push({
         key: i,
-        group_name: 'John Brown',
-        host_name: `${i}2`,
-        ip: `New York No. ${i} Lake Park`,
+        group_name: 'Group1',
+        host_name: `Hohst${i}`,
+        ip: `10.34.45.${i}`,
+    });
+}
+
+for (let i = 61; i <= 120; i++) {
+    data.push({
+        key: i,
+        group_name: 'Group2',
+        host_name: `Hohst${i}`,
+        ip: `10.34.46.${i}`,
     });
 }
 
 class HostManage extends Component {
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+        console.log("selectedrowKeys", selectedRowKeys);
+        console.log("selectedRows", selectedRows);
+        if(selectedRowKeys.length > 0) {
+            this.setState({
+                selectedRowKeys: selectedRowKeys,
+                selectedRows: selectedRows,
+                deleteButton: false
+            })
+        } else {
+            this.setState({
+                selectedRowKeys: [],
+                selectedRows: [],
+                deleteButton: true
+            })
+        }
+    }
+
+    onShowSizeChange = (current, pageSize) => {
+        console.log(current, pageSize);
+    }
+
+    onPageChange = (pageNumber) => {
+        console.log('Page: ', pageNumber);
+    }
+
     state = {
-        loading: false,
-        pagination: "bottom",
-        size: 'default',
-        title: () => formatMessage({id: 'hosts_title'}),
+        loading: true,
         hasData: true,
+        deleteButton: true,
+        selectedRowKeys: [],
+        selectedRows: [],
+        pagination: {
+            showQuickJumper: true,
+            showSizeChanger: true,
+            onShowSizeChange: this.onShowSizeChange,
+            pageSizeOptions: ['10', '20', '50', '100', '300', '500'],
+            onChange: this.onPageChange
+        },
+        rowSelection: {
+            onChange: this.onSelectChange
+        }
     }
 
     columns = [{
         title: formatMessage({id: 'group_name'}),
         dataIndex: 'group_name',
         key: 'group_name',
-        sorter: (a, b) => a.ip > b.ip ? 1 : -1,
+        sorter: (a, b) => a.group_name > b.group_name ? 1 : -1,
         width: 350
     }, {
         title: formatMessage({id: 'host_name'}),
@@ -45,19 +90,61 @@ class HostManage extends Component {
         title: formatMessage({id: 'action'}),
         key: 'action',
         width: 160,
-        render: () => (
+        render: (text, record) => (
             <span>
-              <a href="javascript:;"><FormattedMessage id='delete' /></a>
+              <Popconfirm title={formatMessage({id: 'pop_confirm_title'})} onConfirm={() => this.handleDelete(record.key)}>
+                <a href="javascript:;"><FormattedMessage id='delete' /></a>
+              </Popconfirm>
               <Divider type="vertical" />
               <a href="javascript:;"><FormattedMessage id='edit' /></a>
             </span>
         )
     }]
 
+    // TODO
+    onClickAdd = () => {
+        console.log("Add Clicked!");
+    }
+
+    // TODO: Alert
+    onClickDelete = () => {
+        console.log("Delete Clicked!");
+        console.log(this.state.selectedRowKeys);
+    }
+
+    // TODO
+    onClickEdit = (row) => {
+        console.log("Edit Clicked!", row);
+    }
+
+    // delete one row
+    handleDelete = (key) => {
+        console.log('Delete: ', key);
+    }
+
+    componentDidMount() {
+        this.setState({
+            loading: false
+        })
+    }
+
     render() {
-        const state = this.state;
         return (
-            <Table {...this.state} columns={this.columns} dataSource={data} />
+            <div>
+              <Row style={{ margin:20 }}>
+                <Col span={2}><Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button></Col>
+                <Col sapn={2}><Button onClick={this.onClickDelete} disabled={this.state.deleteButton} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Table
+                    {...this.state}
+                    columns={this.columns}
+                    dataSource={data}
+                    />
+                </Col>
+              </Row>
+            </div>
         );
     }
 }

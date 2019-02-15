@@ -19,5 +19,7 @@ export default {
     ip_address: 'IP Address',
     action: 'Action',
     delete: 'Delete',
-    edit: 'Edit'
+    edit: 'Edit',
+    add: 'Add',
+    pop_confirm_title: 'Sure to delete?'
 }

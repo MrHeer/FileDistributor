@@ -7,8 +7,7 @@ import { Row,
          Icon,
          Tree,
          Input,
-         List,
-         Spin,   //Scroller
+         List
        } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';

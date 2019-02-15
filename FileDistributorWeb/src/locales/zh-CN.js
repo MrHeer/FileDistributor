@@ -19,5 +19,7 @@ export default {
     ip_address: 'IP地址',
     action: '操作',
     delete: '删除',
-    edit: '编辑'
+    edit: '编辑',
+    add: '新增',
+    pop_confirm_title: '确认删除吗？'
 }
