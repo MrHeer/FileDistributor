@@ -21,5 +21,17 @@ export default {
     delete: '删除',
     edit: '编辑',
     add: '新增',
-    pop_confirm_title: '确认删除吗？'
+    pop_confirm_title: '确认删除吗？',
+    confirm_title: '您确定要删除这些主机吗？',
+    total: '共计：',
+    yes: '确认',
+    no: '取消',
+    user_name: '用户名',
+    password: '密码',
+    test: '测试',
+    group_name_message: '请输入组名',
+    host_name_message: '请输入主机名',
+    ip_address_message: '请输入IP地址',
+    user_name_message: '请输入用户名',
+    password_message: '请输入密码'
 }

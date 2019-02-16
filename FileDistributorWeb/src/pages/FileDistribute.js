@@ -21,8 +21,8 @@ const mapStateToProps = (state) => {
     const { treeData } = state['treeData'];
     return {
         treeData
-    }
-}
+    };
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -247,7 +247,7 @@ class FileDistribute extends Component {
                 </Card>
               </Col>
             </Row>
-        )
+        );
     }
 }
 

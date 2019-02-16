@@ -1,18 +1,79 @@
 import { Component } from 'react';
 import {
-    Table, Form, Divider, Row, Col, Button, Icon, Popconfirm
+    Table, Form, Input, Divider, Row, Col, Button, Icon, Popconfirm, Modal
 } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 
+const { confirm } = Modal;
 const FormItem = Form.Item;
+
+const ModalForm = Form.create({ name: 'form_in_modal' })(
+    // eslint-disable-next-line
+    class extends Component {
+        render() {
+            const {
+                visible, confirmLoading, title, onOk, onCancel, form
+            } = this.props;
+            const { getFieldDecorator } = form;
+            return (
+                <Modal
+                  confirmLoading={confirmLoading}
+                  visible={visible}
+                  title={title}
+                  onCancel={onCancel}
+                  onOk={onOk}
+                  >
+                  <Form layout="vertical">
+                    <FormItem label={formatMessage({id: 'group_name'})}>
+                      {getFieldDecorator('groupName', {
+                        rules: [{ required: true, message: formatMessage({id: 'group_name_message'}) }],
+                      })(
+                        <Input />
+                      )}
+                    </FormItem>
+                    <FormItem label={formatMessage({id: 'host_name'})}>
+                      {getFieldDecorator('hostName', {
+                        rules: [{ required: true, message: formatMessage({id: 'host_name_message'}) }],
+                      })(
+                        <Input />
+                      )}
+                    </FormItem>
+                    <FormItem label={formatMessage({id: 'ip_address'})}>
+                      {getFieldDecorator('ipAddress', {
+                        rules: [{ required: true, message: formatMessage({id: 'ip_address_message'}) }],
+                      })(
+                        <Input />
+                      )}
+                     </FormItem>
+                    <FormItem label={formatMessage({id: 'user_name'})}>
+                      {getFieldDecorator('userName', {
+                        rules: [{ required: true, message: formatMessage({id: 'user_name_message'}) }],
+                      })(
+                        <Input />
+                      )}
+                    </FormItem>
+                    <FormItem label={formatMessage({id: 'password'})}>
+                      {getFieldDecorator('password', {
+                        rules: [{ required: true, message: formatMessage({id: 'password_message'}) }],
+                      })(
+                        <Input.Password />
+                      )}
+                    </FormItem>
+                    <Button><FormattedMessage id='test' /></Button>
+                  </Form>
+                </Modal>
+            );
+        }
+    }
+);
 
 const data = [];
 for (let i = 1; i <= 60; i++) {
     data.push({
         key: i,
         group_name: 'Group1',
-        host_name: `Hohst${i}`,
-        ip: `10.34.45.${i}`,
+        host_name: `Host${i}`,
+        ip: `10.34.45.${i}`
     });
 }
 
@@ -20,8 +81,8 @@ for (let i = 61; i <= 120; i++) {
     data.push({
         key: i,
         group_name: 'Group2',
-        host_name: `Hohst${i}`,
-        ip: `10.34.46.${i}`,
+        host_name: `Host${i}`,
+        ip: `10.34.46.${i}`
     });
 }
 
@@ -34,13 +95,13 @@ class HostManage extends Component {
                 selectedRowKeys: selectedRowKeys,
                 selectedRows: selectedRows,
                 deleteButton: false
-            })
+            });
         } else {
             this.setState({
                 selectedRowKeys: [],
                 selectedRows: [],
                 deleteButton: true
-            })
+            });
         }
     }
 
@@ -53,6 +114,9 @@ class HostManage extends Component {
     }
 
     state = {
+        visible: false,
+        confirmLoading: false,
+        modalTitle: formatMessage({id: 'add'}),
         loading: true,
         hasData: true,
         deleteButton: true,
@@ -93,28 +157,58 @@ class HostManage extends Component {
         render: (text, record) => (
             <span>
               <Popconfirm title={formatMessage({id: 'pop_confirm_title'})} onConfirm={() => this.handleDelete(record.key)}>
-                <a href="javascript:;"><FormattedMessage id='delete' /></a>
+                <a><FormattedMessage id='delete' /></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a href="javascript:;"><FormattedMessage id='edit' /></a>
+              <a onClick={() => this.handleEdit(record.key)}><FormattedMessage id='edit' /></a>
             </span>
         )
     }]
 
-    // TODO
     onClickAdd = () => {
-        console.log("Add Clicked!");
+        this.setState({
+            visible: true,
+            modalTitle: formatMessage({id: 'add'}),
+        });
     }
 
-    // TODO: Alert
-    onClickDelete = () => {
-        console.log("Delete Clicked!");
-        console.log(this.state.selectedRowKeys);
+    handleOk = () => {
+        this.setState({
+            visible: false,
+        });
     }
 
-    // TODO
-    onClickEdit = (row) => {
+    handleCancel = () => {
+        console.log('Clicked cancel button');
+        this.setState({
+            visible: false,
+        });
+    }
+
+    handleEdit = (row) => {
         console.log("Edit Clicked!", row);
+        this.setState({
+            visible: true,
+            modalTitle: formatMessage({id: 'edit'}),
+        });
+    }
+
+    // delete you selected rows
+    onClickDelete = () => {
+        confirm({
+            title: formatMessage({id: 'confirm_title'}),
+            content: formatMessage({id: 'total'}) + this.state.selectedRowKeys.length,
+            okText: formatMessage({id: 'yes'}),
+            okType: 'danger',
+            cancelText: formatMessage({id: 'no'}),
+            onOk() {
+                console.log('OK');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+        console.log(this.state.selectedRowKeys);
     }
 
     // delete one row
@@ -125,14 +219,24 @@ class HostManage extends Component {
     componentDidMount() {
         this.setState({
             loading: false
-        })
+        });
     }
 
     render() {
         return (
             <div>
               <Row style={{ margin:20 }}>
-                <Col span={2}><Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button></Col>
+                <Col span={2}>
+                  <Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button>
+                  <ModalForm
+                    title={this.state.modalTitle}
+                    visible={this.state.visible}
+                    onOk={this.handleOk}
+                    confirmLoading={this.state.confirmLoading}
+                    onCancel={this.handleCancel}
+                    >
+                  </ModalForm>
+                </Col>
                 <Col sapn={2}><Button onClick={this.onClickDelete} disabled={this.state.deleteButton} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
               </Row>
               <Row>

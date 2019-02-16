@@ -21,5 +21,17 @@ export default {
     delete: 'Delete',
     edit: 'Edit',
     add: 'Add',
-    pop_confirm_title: 'Sure to delete?'
+    pop_confirm_title: 'Sure to delete?',
+    confirm_title: 'Are you sure delete these host?',
+    total: 'Total: ',
+    yes: 'Yes',
+    no: 'No',
+    user_name: 'User Name',
+    password: 'Password',
+    test: 'Test',
+    group_name_message: 'Please input group name',
+    host_name_message: 'Please input host name',
+    ip_address_message: 'Please input IP address',
+    user_name_message: 'Please input user name',
+    password_message: 'Please input password'
 }
