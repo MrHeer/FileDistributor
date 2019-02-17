@@ -11,7 +11,6 @@ import { Row,
        } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';
-import { message } from 'antd';
 import { connect } from 'dva';
 const { TreeNode } = Tree;
 

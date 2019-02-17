@@ -1,4 +1,4 @@
-import { queryTreeData } from '@/services/api'
+import { queryTreeData } from '@/services/api';
 
 export default {
     namespace: 'treeData',
@@ -12,7 +12,7 @@ export default {
             yield put({
                 type: 'treeData',
                 payload: data
-            })
+            });
         }
     },
 
@@ -21,7 +21,7 @@ export default {
             const { treeData } = data;
             return {
                 treeData
-            }
+            };
         }
     }
 };

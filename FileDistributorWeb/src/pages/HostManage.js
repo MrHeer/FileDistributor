@@ -3,6 +3,7 @@ import {
     Table, Form, Input, Divider, Row, Col, Button, Icon, Popconfirm, Modal
 } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
+import { connect } from 'dva';
 
 const { confirm } = Modal;
 const FormItem = Form.Item;
@@ -67,25 +68,24 @@ const ModalForm = Form.create({ name: 'form_in_modal' })(
     }
 );
 
-const data = [];
-for (let i = 1; i <= 60; i++) {
-    data.push({
-        key: i,
-        group_name: 'Group1',
-        host_name: `Host${i}`,
-        ip: `10.34.45.${i}`
-    });
-}
+const mapStateToProps = (state) => {
+    const { hostData } = state['hostData'];
+    return {
+        hostData
+    };
+};
 
-for (let i = 61; i <= 120; i++) {
-    data.push({
-        key: i,
-        group_name: 'Group2',
-        host_name: `Host${i}`,
-        ip: `10.34.46.${i}`
-    });
-}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onDidMount: () => {
+            dispatch({
+                type: 'hostData/fetch',
+            });
+        },
+    };
+};
 
+@connect(mapStateToProps, mapDispatchToProps)
 class HostManage extends Component {
     onSelectChange = (selectedRowKeys, selectedRows) => {
         console.log("selectedrowKeys", selectedRowKeys);
@@ -217,6 +217,7 @@ class HostManage extends Component {
     }
 
     componentDidMount() {
+        this.props.onDidMount();
         this.setState({
             loading: false
         });
@@ -244,7 +245,7 @@ class HostManage extends Component {
                   <Table
                     {...this.state}
                     columns={this.columns}
-                    dataSource={data}
+                    dataSource={this.props.hostData}
                     />
                 </Col>
               </Row>
