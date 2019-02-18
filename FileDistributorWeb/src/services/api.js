@@ -7,3 +7,12 @@ export async function queryTreeData() {
 export async function queryHostData() {
     return request('/api/getHostData');
 }
+
+export async function distribute(params) {
+    return request('/api/distribute', {
+        method: 'POST',
+        body: {
+            ...params
+        }
+    });
+}

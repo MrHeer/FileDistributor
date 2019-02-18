@@ -22,4 +22,4 @@ export default {
     'get /api/getTreeData': {
         treeData: treeData
     }
-}
+};

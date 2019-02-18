@@ -20,7 +20,7 @@ export default {
         hostData(state, {payload: data}) {
             const { hostData } = data;
             return {
-                hostData
+                hostData: hostData
             };
         }
     }

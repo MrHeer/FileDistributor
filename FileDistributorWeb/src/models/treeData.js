@@ -20,7 +20,7 @@ export default {
         treeData(state, {payload: data}) {
             const { treeData } = data;
             return {
-                treeData
+                treeData: treeData
             };
         }
     }

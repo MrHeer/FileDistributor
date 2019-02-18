@@ -1,6 +1,15 @@
 import { Component } from 'react';
 import {
-    Table, Form, Input, Divider, Row, Col, Button, Icon, Popconfirm, Modal
+    Table,
+    Form,
+    Input,
+    Divider,
+    Row, Col,
+    Button,
+    Icon,
+    Popconfirm,
+    Modal,
+    Spin
 } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { connect } from 'dva';
@@ -71,7 +80,8 @@ const ModalForm = Form.create({ name: 'form_in_modal' })(
 const mapStateToProps = (state) => {
     const { hostData } = state['hostData'];
     return {
-        hostData
+        hostData,
+        loading: state.loading.global
     };
 };
 
@@ -117,7 +127,6 @@ class HostManage extends Component {
         visible: false,
         confirmLoading: false,
         modalTitle: formatMessage({id: 'add'}),
-        loading: true,
         hasData: true,
         deleteButton: true,
         selectedRowKeys: [],
@@ -218,37 +227,36 @@ class HostManage extends Component {
 
     componentDidMount() {
         this.props.onDidMount();
-        this.setState({
-            loading: false
-        });
     }
 
     render() {
         return (
             <div>
-              <Row style={{ margin:20 }}>
-                <Col span={2}>
-                  <Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button>
-                  <ModalForm
-                    title={this.state.modalTitle}
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    confirmLoading={this.state.confirmLoading}
-                    onCancel={this.handleCancel}
-                    >
-                  </ModalForm>
-                </Col>
-                <Col sapn={2}><Button onClick={this.onClickDelete} disabled={this.state.deleteButton} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Table
-                    {...this.state}
-                    columns={this.columns}
-                    dataSource={this.props.hostData}
-                    />
-                </Col>
-              </Row>
+              <Spin spinning={ this.props.loading }>
+                <Row style={{ margin:20 }}>
+                  <Col span={2}>
+                    <Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button>
+                    <ModalForm
+                      title={this.state.modalTitle}
+                      visible={this.state.visible}
+                      onOk={this.handleOk}
+                      confirmLoading={this.state.confirmLoading}
+                      onCancel={this.handleCancel}
+                      >
+                    </ModalForm>
+                  </Col>
+                  <Col sapn={2}><Button onClick={this.onClickDelete} disabled={this.state.deleteButton} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Table
+                      {...this.state}
+                      columns={this.columns}
+                      dataSource={this.props.hostData}
+                      />
+                  </Col>
+                </Row>
+              </Spin>
             </div>
         );
     }

@@ -7,7 +7,8 @@ import { Row,
          Icon,
          Tree,
          Input,
-         List
+         List,
+         Spin
        } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';
@@ -18,8 +19,11 @@ import Styles from './FileDistributeStyles.less';
 
 const mapStateToProps = (state) => {
     const { treeData } = state['treeData'];
+    const { distributeStatus } = state['distribute'];
     return {
-        treeData
+        treeData,
+        distributeStatus,
+        loading: state.loading.global
     };
 };
 
@@ -27,21 +31,23 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onDidMount: () => {
             dispatch({
-                type: 'treeData/fetch',
+                type: 'treeData/fetch'
             });
         },
+
+        onDistribute: (data) => {
+            dispatch({
+                type: 'distribute/distribute',
+                payload: data
+            });
+        }
     };
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
 class FileDistribute extends Component {
     state = {
-        fileList: [{
-            uid: '-1',
-            name: 'xxx.png',
-            status: 'done',
-            url: 'http://www.baidu.com/xxx.png'
-        }],
+        fileList: [],
         expandedKeys: ['G-0'],
         autoExpandParent: true,
         checkedKeys: [],
@@ -52,7 +58,8 @@ class FileDistribute extends Component {
         }],
 
         // SelectedHostTitles
-        listData: []
+        listData: [],
+        remotePath: ''
     }
 
     handleChange = (info) => {
@@ -60,7 +67,7 @@ class FileDistribute extends Component {
 
         // 1. Limit the number of uploaded files
         // Only to show two recent uploaded files, and old ones will be replaced by the new
-        fileList = fileList.slice(-2);
+        fileList = fileList.slice(-1);
 
         // 2. Read from response and show file link
         fileList = fileList.map((file) => {
@@ -72,12 +79,12 @@ class FileDistribute extends Component {
         });
 
         // 3. Filter successfully uploaded files according to response from server
-        fileList = fileList.filter((file) => {
-            if (file.response) {
-                return file.response.status === 'success';
-            }
-            return false;
-        });
+        // fileList = fileList.filter((file) => {
+        //     if (file.response) {
+        //         return file.response.status === 'success';
+        //     }
+        //     return false;
+        // });
 
         this.setState({ fileList });
     }
@@ -133,6 +140,22 @@ class FileDistribute extends Component {
         });
     }
 
+    handleRemotePathChange = (e) => {
+        this.setState({
+            remotePath: e.target.value
+        })
+    }
+
+    handleDistribute = () => {
+        const {fileList, selectedKeys, remotePath} = this.state;
+        const data = {
+            fileList,
+            selectedKeys,
+            remotePath
+        };
+        this.props.onDistribute(data);
+    }
+
     componentDidMount() {
         this.props.onDidMount();
     }
@@ -156,95 +179,99 @@ class FileDistribute extends Component {
 
     render() {
         const props = {
-            action: '//jsonplaceholder.typicode.com/posts/',
+            action: '/api/uploadFile',
             onChange: this.handleChange,
             multiple: true,
         };
 
         return (
             <Row gutter={5}>
-              <Col span={8}>
-                <Card
-                  className={Styles.card}
-                  title={ formatMessage({id: 'chose_file'}) }
-                  >
-                  <div
-                    style={{
-                        overflow: 'auto',
-                        height: 420
-                    }}
+              <Spin spinning={ this.props.loading }>
+                <Col span={8}>
+                  <Card
+                    className={Styles.card}
+                    title={ formatMessage({id: 'chose_file'}) }
                     >
-                    <InfiniteScroll loadMore={()=>{return}}>
-                      <Upload {...props} fileList={this.state.fileList}>
-                        <Button>
-                          <Icon type="upload" /> <FormattedMessage id="upload" />
-                        </Button>
-                      </Upload>
-                    </InfiniteScroll>
-                  </div>
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card
-                  className={Styles.card}
-                  title={ formatMessage({id: 'chose_host'}) }
-                  >
-                  <div
-                    style={{
-                        overflow: 'auto',
-                        height: 420
-                    }}
+                    <div
+                      style={{
+                          overflow: 'auto',
+                          height: 420
+                      }}
+                      >
+                      <InfiniteScroll loadMore={()=>{return}}>
+                        <Upload {...props}
+                                fileList={this.state.fileList}
+                                >
+                          <Button>
+                            <Icon type="upload" /> <FormattedMessage id="upload" />
+                          </Button>
+                        </Upload>
+                      </InfiniteScroll>
+                    </div>
+                  </Card>
+                </Col>
+                <Col span={8}>
+                  <Card
+                    className={Styles.card}
+                    title={ formatMessage({id: 'chose_host'}) }
                     >
-                    <InfiniteScroll loadMore={()=>{return}}>
-                      <Tree
-                        multiple={true}
-                        checkable
-                        onExpand={ this.onExpand }
-                        expandedKeys={ this.state.expandedKeys }
-                        autoExpandParent={ this.state.autoExpandParent }
-                        onCheck={ this.onCheck }
-                        checkedKeys={ this.state.checkedKeys }
-                        selectedKeys={ this.state.selectedKeys }
-                        >
-                        { this.renderTreeNodes(this.props.treeData) }
-                      </Tree>
-                    </InfiniteScroll>
-                  </div>
-                </Card>
-              </Col>
-              <Col span={8}>
-                <Card
-                  className={Styles.card}
-                  title={ formatMessage({id: 'distribute_file'}) }
-                  >
-                  <Row>
-                    <Col>{ formatMessage({id: 'checked'}) }</Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <div
-                        style={{
-                            overflow: 'auto',
-                            height: 300
-                        }}
-                        >
-                        <InfiniteScroll loadMore={()=>{return}}>
-                          <List
-                            size="small"
-                            dataSource={ this.state.listData }
-                            renderItem={ this.renderList } />
-                        </InfiniteScroll>
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row style={{ marginTop: 20, marginBottom: 20 }}>
-                    <Col><Input placeholder={ formatMessage({id: 'remote_path'})} /></Col>
-                  </Row>
-                  <Row type="flex" justify="center">
-                    <Col><Button><Icon type="rocket" /><FormattedMessage id='distribute' /></Button></Col>
-                  </Row>
-                </Card>
-              </Col>
+                    <div
+                      style={{
+                          overflow: 'auto',
+                          height: 420
+                      }}
+                      >
+                      <InfiniteScroll loadMore={()=>{return}}>
+                        <Tree
+                          multiple={true}
+                          checkable
+                          onExpand={ this.onExpand }
+                          expandedKeys={ this.state.expandedKeys }
+                          autoExpandParent={ this.state.autoExpandParent }
+                          onCheck={ this.onCheck }
+                          checkedKeys={ this.state.checkedKeys }
+                          selectedKeys={ this.state.selectedKeys }
+                          >
+                          { this.renderTreeNodes(this.props.treeData) }
+                        </Tree>
+                      </InfiniteScroll>
+                    </div>
+                  </Card>
+                </Col>
+                <Col span={8}>
+                  <Card
+                    className={Styles.card}
+                    title={ formatMessage({id: 'distribute_file'}) }
+                    >
+                    <Row>
+                      <Col>{ formatMessage({id: 'checked'}) }</Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <div
+                          style={{
+                              overflow: 'auto',
+                              height: 300
+                          }}
+                          >
+                          <InfiniteScroll loadMore={()=>{return}}>
+                            <List
+                              size="small"
+                              dataSource={ this.state.listData }
+                              renderItem={ this.renderList } />
+                          </InfiniteScroll>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: 20, marginBottom: 20 }}>
+                      <Col><Input onChange={this.handleRemotePathChange} placeholder={ formatMessage({id: 'remote_path'})} /></Col>
+                    </Row>
+                    <Row type="flex" justify="center">
+                      <Col><Button onClick={this.handleDistribute}><Icon type="rocket" /><FormattedMessage id='distribute' /></Button></Col>
+                    </Row>
+                  </Card>
+                </Col>
+              </Spin>
             </Row>
         );
     }

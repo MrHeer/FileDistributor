@@ -21,4 +21,4 @@ export default {
     'get /api/getHostData': {
         hostData: hostData
     }
-}
+};
