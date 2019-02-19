@@ -1,4 +1,6 @@
 import { distribute } from '@/services/api';
+import { message } from 'antd';
+import { formatMessage } from 'umi/locale';
 
 export default {
     namespace: 'distribute',
@@ -19,9 +21,13 @@ export default {
     reducers: {
         distributeStatus(state, {payload: data}) {
             const { distributeStatus } = data;
+            if(distributeStatus.status === 'success') {
+                message.success(formatMessage({ id: 'distribute_success' }));
+            } else if(distributeStatus.status === 'error') {
+                message.error(formatMessage({ id: 'distribute_error' }));
+            }
             return {
-                distributeStatus: distributeStatus,
-                loading: false
+                distributeStatus: distributeStatus
             };
         }
     }

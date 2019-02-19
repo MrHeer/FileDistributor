@@ -11,6 +11,8 @@ export default {
     remote_path: 'remote path...',
     checked: 'Selected Host',
     upload: 'Upload',
+    distribute_success: 'Distribut success',
+    distribute_error: 'Distribut error',
 
     // HostManage
     hosts_title: 'Host List',
@@ -33,5 +35,14 @@ export default {
     host_name_message: 'Please input host name',
     ip_address_message: 'Please input IP address',
     user_name_message: 'Please input user name',
-    password_message: 'Please input password'
+    password_message: 'Please input password',
+    add_success: 'Add success',
+    delete_success: 'Delete success',
+    edit_success: 'Edit success',
+    test_success: 'Test success',
+    add_error: 'Add error',
+    delete_error: 'Delete error',
+    edit_error: 'Edit error',
+    test_error: 'Test error',
+    fill_form: 'Please fill out the form correctly'
 }

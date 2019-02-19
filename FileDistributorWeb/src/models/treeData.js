@@ -1,4 +1,4 @@
-import { queryTreeData } from '@/services/api';
+import { getTreeData } from '@/services/api';
 
 export default {
     namespace: 'treeData',
@@ -8,7 +8,7 @@ export default {
 
     effects: {
         *fetch({ payload }, { call, put }) {
-            const data = yield call(queryTreeData, payload);
+            const data = yield call(getTreeData, payload);
             yield put({
                 type: 'treeData',
                 payload: data

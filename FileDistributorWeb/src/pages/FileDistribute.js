@@ -90,7 +90,6 @@ class FileDistribute extends Component {
     }
 
     onExpand = (expandedKeys) => {
-        console.log('onExpand', expandedKeys);
         // if not set autoExpandParent to false, if children expanded, parent can not collapse.
         // or, you can remove all expanded children keys.
         this.setState({
@@ -100,7 +99,6 @@ class FileDistribute extends Component {
     }
 
     onCheck = (checkedKeys) => {
-        console.log('onCheck', checkedKeys);
         this.setState({
             checkedKeys
         });
@@ -143,14 +141,14 @@ class FileDistribute extends Component {
     handleRemotePathChange = (e) => {
         this.setState({
             remotePath: e.target.value
-        })
+        });
     }
 
     handleDistribute = () => {
-        const {fileList, selectedKeys, remotePath} = this.state;
+        const {fileList, selectedHost, remotePath} = this.state;
         const data = {
             fileList,
-            selectedKeys,
+            selectedHost,
             remotePath
         };
         this.props.onDistribute(data);

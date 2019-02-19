@@ -11,6 +11,8 @@ export default {
     remote_path: '远程路径...',
     checked: '所选主机',
     upload: '上传',
+    distribute_success: '分发成功',
+    distribute_error: '分发错误',
 
     // HostManage
     hosts_title: '主机列表',
@@ -33,5 +35,14 @@ export default {
     host_name_message: '请输入主机名',
     ip_address_message: '请输入IP地址',
     user_name_message: '请输入用户名',
-    password_message: '请输入密码'
+    password_message: '请输入密码',
+    add_success: '新增成功',
+    delete_success: '删除成功',
+    edit_success: '编辑成功',
+    test_success: '测试成功',
+    add_error: '新增错误',
+    delete_error: '删除错误',
+    edit_error: '编辑错误',
+    test_error: '测试错误',
+    fill_form: '请正确完成表单'
 }

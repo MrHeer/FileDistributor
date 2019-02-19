@@ -9,7 +9,8 @@ import {
     Icon,
     Popconfirm,
     Modal,
-    Spin
+    Spin,
+    message
 } from 'antd';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { connect } from 'dva';
@@ -18,11 +19,10 @@ const { confirm } = Modal;
 const FormItem = Form.Item;
 
 const ModalForm = Form.create({ name: 'form_in_modal' })(
-    // eslint-disable-next-line
     class extends Component {
         render() {
             const {
-                visible, confirmLoading, title, onOk, onCancel, form
+                visible, confirmLoading, title, onOk, onCancel, form, formData, onTest
             } = this.props;
             const { getFieldDecorator } = form;
             return (
@@ -30,33 +30,52 @@ const ModalForm = Form.create({ name: 'form_in_modal' })(
                   confirmLoading={confirmLoading}
                   visible={visible}
                   title={title}
-                  onCancel={onCancel}
-                  onOk={onOk}
+                  onCancel={() => {
+                      onCancel();
+                      form.resetFields();
+                  }}
+                  onOk={() => {
+                      // check
+                      var fieldsValue = form.getFieldsValue();
+                      fieldsValue.host_id = formData.host_id;
+                      form.validateFields((errors, values) => {
+                          if(errors == null) {
+                              onOk(fieldsValue);
+                              form.resetFields();
+                          } else {
+                              message.error(formatMessage({id: 'fill_form'}));
+                          }
+                      });
+                  }}
                   >
                   <Form layout="vertical">
                     <FormItem label={formatMessage({id: 'group_name'})}>
-                      {getFieldDecorator('groupName', {
+                      {getFieldDecorator('group_name', {
+                        initialValue: formData.group_name,
                         rules: [{ required: true, message: formatMessage({id: 'group_name_message'}) }],
                       })(
                         <Input />
                       )}
                     </FormItem>
                     <FormItem label={formatMessage({id: 'host_name'})}>
-                      {getFieldDecorator('hostName', {
+                    {getFieldDecorator('host_name', {
+                        initialValue: formData.host_name,
                         rules: [{ required: true, message: formatMessage({id: 'host_name_message'}) }],
                       })(
                         <Input />
                       )}
                     </FormItem>
                     <FormItem label={formatMessage({id: 'ip_address'})}>
-                      {getFieldDecorator('ipAddress', {
+                      {getFieldDecorator('ip_address', {
+                        initialValue: formData.ip_address,
                         rules: [{ required: true, message: formatMessage({id: 'ip_address_message'}) }],
                       })(
                         <Input />
                       )}
                      </FormItem>
                     <FormItem label={formatMessage({id: 'user_name'})}>
-                      {getFieldDecorator('userName', {
+                      {getFieldDecorator('user_name', {
+                        initialValue: formData.user_name,
                         rules: [{ required: true, message: formatMessage({id: 'user_name_message'}) }],
                       })(
                         <Input />
@@ -64,12 +83,27 @@ const ModalForm = Form.create({ name: 'form_in_modal' })(
                     </FormItem>
                     <FormItem label={formatMessage({id: 'password'})}>
                       {getFieldDecorator('password', {
+                        initialValue: formData.password,
                         rules: [{ required: true, message: formatMessage({id: 'password_message'}) }],
                       })(
                         <Input.Password />
                       )}
                     </FormItem>
-                    <Button><FormattedMessage id='test' /></Button>
+                    <Button
+                      onClick={() => {
+                          var fieldsValue = form.getFieldsValue();
+                          fieldsValue.host_id = formData.host_id;
+                          form.validateFields((errors, values) => {
+                              if(errors == null) {
+                                  onTest(fieldsValue);
+                              } else {
+                                  message.error(formatMessage({id: 'fill_form'}));
+                              }
+                          });
+                      }}
+                    >
+                    <FormattedMessage id='test' />
+                    </Button>
                   </Form>
                 </Modal>
             );
@@ -89,17 +123,43 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onDidMount: () => {
             dispatch({
-                type: 'hostData/fetch',
+                type: 'hostData/fetch'
             });
         },
+
+        onAddHost: (data) => {
+            dispatch({
+                type: 'hostData/add',
+                payload: data
+            })
+        },
+
+        onDeleteHost: (data) => {
+            dispatch({
+                type: 'hostData/delete',
+                payload: data
+            })
+        },
+
+        onEditHost: (data) => {
+            dispatch({
+                type: 'hostData/edit',
+                payload: data
+            })
+        },
+
+        onTestHost: (data) => {
+            dispatch({
+                type: 'hostData/test',
+                payload: data
+            })
+        }
     };
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
 class HostManage extends Component {
     onSelectChange = (selectedRowKeys, selectedRows) => {
-        console.log("selectedrowKeys", selectedRowKeys);
-        console.log("selectedRows", selectedRows);
         if(selectedRowKeys.length > 0) {
             this.setState({
                 selectedRowKeys: selectedRowKeys,
@@ -116,11 +176,9 @@ class HostManage extends Component {
     }
 
     onShowSizeChange = (current, pageSize) => {
-        console.log(current, pageSize);
     }
 
     onPageChange = (pageNumber) => {
-        console.log('Page: ', pageNumber);
     }
 
     state = {
@@ -140,6 +198,14 @@ class HostManage extends Component {
         },
         rowSelection: {
             onChange: this.onSelectChange
+        },
+        formData: {
+            host_id: '',
+            group_name: '',
+            host_name: '',
+            ip_address: '',
+            user_name: '',
+            password: ''
         }
     }
 
@@ -156,8 +222,8 @@ class HostManage extends Component {
         width: 350,
     }, {
         title: formatMessage({id: 'ip_address'}),
-        dataIndex: 'ip',
-        key: 'ip',
+        dataIndex: 'ip_address',
+        key: 'ip_address',
         width: 400
     }, {
         title: formatMessage({id: 'action'}),
@@ -169,60 +235,89 @@ class HostManage extends Component {
                 <a><FormattedMessage id='delete' /></a>
               </Popconfirm>
               <Divider type="vertical" />
-              <a onClick={() => this.handleEdit(record.key)}><FormattedMessage id='edit' /></a>
+              <a onClick={() => this.handleEdit(record)}><FormattedMessage id='edit' /></a>
             </span>
         )
     }]
 
     onClickAdd = () => {
+        const formData = {
+            host_id: '',
+            group_name: '',
+            host_name: '',
+            ip_address: '',
+            user_name: '',
+            password: ''
+        };
         this.setState({
             visible: true,
             modalTitle: formatMessage({id: 'add'}),
+            formData: formData
         });
     }
 
-    handleOk = () => {
+    // add or edit host
+    handleOk = (data) => {
+        if (data.host_id == '') {
+            // add host
+            this.props.onAddHost(data);
+        } else {
+            // edit host
+            this.props.onEditHost(data);
+        }
         this.setState({
-            visible: false,
+            visible: false
         });
     }
 
     handleCancel = () => {
-        console.log('Clicked cancel button');
         this.setState({
-            visible: false,
+            visible: false
         });
     }
 
     handleEdit = (row) => {
-        console.log("Edit Clicked!", row);
+        const formData = {
+            host_id: row.key,
+            group_name: row.group_name,
+            host_name: row.host_name,
+            ip_address: row.ip_address,
+            user_name: '',
+            password: ''
+        };
         this.setState({
             visible: true,
             modalTitle: formatMessage({id: 'edit'}),
+            formData: formData
         });
     }
 
     // delete you selected rows
     onClickDelete = () => {
+        const data = {
+            hostID: this.state.selectedRowKeys
+        };
+        const onDeleteHost = this.props.onDeleteHost;
         confirm({
             title: formatMessage({id: 'confirm_title'}),
-            content: formatMessage({id: 'total'}) + this.state.selectedRowKeys.length,
+            content: formatMessage({id: 'total'}) + data.hostID.length,
             okText: formatMessage({id: 'yes'}),
             okType: 'danger',
             cancelText: formatMessage({id: 'no'}),
-            onOk() {
-                console.log('OK');
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
+            onOk: () => onDeleteHost(data)
         });
-        console.log(this.state.selectedRowKeys);
     }
 
     // delete one row
     handleDelete = (key) => {
-        console.log('Delete: ', key);
+        const data = {
+            hostID: [key]
+        }
+        this.props.onDeleteHost(data);
+    }
+
+    handleTest = (data) => {
+        this.props.onTestHost(data)
     }
 
     componentDidMount() {
@@ -239,7 +334,9 @@ class HostManage extends Component {
                     <ModalForm
                       title={this.state.modalTitle}
                       visible={this.state.visible}
+                      formData={this.state.formData}
                       onOk={this.handleOk}
+                      onTest={this.handleTest}
                       confirmLoading={this.state.confirmLoading}
                       onCancel={this.handleCancel}
                       >
