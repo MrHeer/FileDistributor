@@ -194,7 +194,8 @@ class HostManage extends Component {
             showSizeChanger: true,
             onShowSizeChange: this.onShowSizeChange,
             pageSizeOptions: ['10', '20', '50', '100', '300', '500'],
-            onChange: this.onPageChange
+            onChange: this.onPageChange,
+            showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`
         },
         rowSelection: {
             onChange: this.onSelectChange
