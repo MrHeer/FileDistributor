@@ -4,8 +4,7 @@ export default {
         component: '../layouts/App',
         routes: [
             {
-                path: '/',
-                component: 'FileDistribute'
+                path: '/', redirect: '/FileDistribute'
             },
             {
                 path: '/FileDistribute',

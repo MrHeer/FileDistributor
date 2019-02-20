@@ -7,18 +7,29 @@ import DocumentTitle from 'react-document-title';
 const { Header, Content, Footer } = Layout;
 
 class BasicLayout extends Component {
+    state = {
+        selectedKey: '1'
+    }
 
     // change the language
-    changLang() {
+    onClickLang = () => {
         const locale = getLocale();
         if (!locale || locale === 'zh-CN') {
             setLocale('en-US');
         } else {
             setLocale('zh-CN');
         }
-   }
+    }
 
     render() {
+        // change the menu
+        const pathName = this.props.children.props.location.pathname;
+        if(pathName === '/FileDistribute') {
+            this.state.selectedKey = '1';
+        } else if(pathName === '/HostManage') {
+            this.state.selectedKey = '2';
+        }
+
         return (
             <Layout>
               <DocumentTitle title={ formatMessage({id: 'project_name'}) }/>
@@ -30,7 +41,7 @@ class BasicLayout extends Component {
                     <Menu
                       theme="light"
                       mode="horizontal"
-                      defaultSelectedKeys={['1']}
+                      selectedKeys={[this.state.selectedKey]}
                       style={{ lineHeight: '64px' }}
                       >
                       <Menu.Item key="1"><Link to="/FileDistribute"><Icon type="file" /><FormattedMessage id="file_distribute" /></Link></Menu.Item>
@@ -39,9 +50,7 @@ class BasicLayout extends Component {
                   </Col>
                   <Col span={1}>
                     <Button size="small"
-                            onClick={() => {
-                                this.changLang();
-                      }}>
+                            onClick={this.onClickLang}>
                       <FormattedMessage id="language" />
                     </Button>
                   </Col>
