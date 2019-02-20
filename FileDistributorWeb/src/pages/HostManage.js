@@ -329,7 +329,7 @@ class HostManage extends Component {
         return (
             <div>
               <Spin spinning={ this.props.loading }>
-                <Row style={{ margin:20 }}>
+                <Row style={{ margin: 20 }}>
                   <Col span={2}>
                     <Button onClick={this.onClickAdd}><Icon type="plus-circle" /><FormattedMessage id='add' /></Button>
                     <ModalForm
@@ -349,6 +349,7 @@ class HostManage extends Component {
                   <Col>
                     <Table
                       {...this.state}
+                      style={{ minHeight: 520 }}
                       columns={this.columns}
                       dataSource={this.props.hostData}
                       />

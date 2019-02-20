@@ -5,7 +5,7 @@ export async function getTreeData() {
 }
 
 export async function getHostData() {
-    return request('/api/getHost');
+    return request('/api/getHostData');
 }
 
 export async function addHost(params) {

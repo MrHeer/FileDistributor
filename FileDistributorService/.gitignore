@@ -3,3 +3,12 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore IntelliJ IDEA project-specific cache directory
+.idea
+
+# Ignore IntelliJ IDEA build output directory
+out
+
+# Ignore webpack build output directory
+src/main/resources/static
