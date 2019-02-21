@@ -1,4 +1,4 @@
-package com.mrheer.filedistributorservice.hostmanage;
+package com.mrheer.filedistributorservice.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
