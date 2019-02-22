@@ -38,7 +38,6 @@ export default {
     },
 
     'post /api/testHost': {
-        hostData: hostData,
         status: 'success'
     }
 };

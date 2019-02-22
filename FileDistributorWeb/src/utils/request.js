@@ -18,7 +18,14 @@ function checkStatus(response) {
  * @return {object}          An object containing either "data" or "error"
 */
 export default async function request(url, options) {
-    const response = await fetch(url, options);
+    const newOptions = {...options};
+    newOptions.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        ...newOptions.headers,
+    };
+    newOptions.body = JSON.stringify(newOptions.body);
+    const response = await fetch(url, newOptions);
     checkStatus(response);
     return await response.json();
 }

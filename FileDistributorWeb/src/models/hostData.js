@@ -5,7 +5,8 @@ import { formatMessage } from 'umi/locale';
 export default {
     namespace: 'hostData',
     state: {
-        hostData: []
+        hostData: [],
+        status: ''
     },
 
     effects: {
@@ -95,14 +96,15 @@ export default {
         },
 
         testHost(state, {payload: data}) {
-            const { hostData, status } = data;
+            const { status } = data;
             if(status === 'success') {
                 message.success(formatMessage({ id: 'test_success' }));
             } else if(status === 'error') {
                 message.error(formatMessage({ id: 'test_error' }));
             }
             return {
-                hostData: hostData
+                hostData: state.hostData,
+                status: status
             };
         }
     }

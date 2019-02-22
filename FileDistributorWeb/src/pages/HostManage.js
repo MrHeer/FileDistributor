@@ -131,28 +131,28 @@ const mapDispatchToProps = (dispatch) => {
             dispatch({
                 type: 'hostData/add',
                 payload: data
-            })
+            });
         },
 
         onDeleteHost: (data) => {
             dispatch({
                 type: 'hostData/delete',
                 payload: data
-            })
+            });
         },
 
         onEditHost: (data) => {
             dispatch({
                 type: 'hostData/edit',
                 payload: data
-            })
+            });
         },
 
         onTestHost: (data) => {
             dispatch({
                 type: 'hostData/test',
                 payload: data
-            })
+            });
         }
     };
 };
@@ -313,12 +313,12 @@ class HostManage extends Component {
     handleDelete = (key) => {
         const data = {
             hostID: [key]
-        }
+        };
         this.props.onDeleteHost(data);
     }
 
     handleTest = (data) => {
-        this.props.onTestHost(data)
+        this.props.onTestHost(data);
     }
 
     componentDidMount() {

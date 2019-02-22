@@ -26,5 +26,11 @@ export default {
                 antd: true // 是否启用antd的<LocaleProvider />
             }
         }]
-    ]
+    ],
+    proxy: {
+        '/api': {
+            target: 'http://localhost:8888/',
+            changeOrigin: true,
+        },
+    }
 };
