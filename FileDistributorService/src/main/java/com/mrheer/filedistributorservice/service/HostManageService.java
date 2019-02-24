@@ -14,7 +14,7 @@ public class HostManageService {
     @Autowired
     private HostRepository hostRepository;
 
-    public HostModel findAll() {
+    public HostModel getHostModel() {
         HostModel hostModel = new HostModel();
         List<HostEntity> list = hostRepository.findAll();
         List<HostModel.HostDataBean> hostDataBeanList = new ArrayList<>();
@@ -33,13 +33,13 @@ public class HostManageService {
 
     public HostModel save(HostEntity hostEntity) {
         hostRepository.saveAndFlush(hostEntity);
-        return findAll();
+        return getHostModel();
     }
 
     public HostModel delete(List<Long> list) {
         for (Long id : list) {
             hostRepository.deleteById(id);
         }
-        return findAll();
+        return getHostModel();
     }
 }

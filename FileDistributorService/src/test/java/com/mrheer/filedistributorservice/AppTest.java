@@ -22,7 +22,7 @@ public class AppTest {
     @Test
     public void helloGradle() throws Exception {
         mvc.perform(get("/"))
-            .andExpect(status().isOk())
-            .andExpect(content().string("Hello Gradle!"));
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello Gradle!"));
     }
 }

@@ -22,7 +22,7 @@ public class HostManageController {
 
     @RequestMapping(value = "/getHostData", method = RequestMethod.GET)
     public HostModel getHost() {
-        return hostManageService.findAll();
+        return hostManageService.getHostModel();
     }
 
     @RequestMapping(value = "/addHost", method = RequestMethod.POST)
