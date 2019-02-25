@@ -44,5 +44,6 @@ export default {
     delete_error: 'Delete error',
     edit_error: 'Edit error',
     test_error: 'Test error',
-    fill_form: 'Please fill out the form correctly'
+    fill_form: 'Please fill out the form correctly',
+    no_checked: 'Please select at least one line'
 }

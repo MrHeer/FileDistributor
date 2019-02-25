@@ -160,19 +160,11 @@ const mapDispatchToProps = (dispatch) => {
 @connect(mapStateToProps, mapDispatchToProps)
 class HostManage extends Component {
     onSelectChange = (selectedRowKeys, selectedRows) => {
-        if(selectedRowKeys.length > 0) {
-            this.setState({
-                selectedRowKeys: selectedRowKeys,
-                selectedRows: selectedRows,
-                deleteButton: false
-            });
-        } else {
-            this.setState({
-                selectedRowKeys: [],
-                selectedRows: [],
-                deleteButton: true
-            });
-        }
+        const selectedKeys = [];
+        selectedRows.forEach(row => selectedKeys.push(row.key));
+        this.setState({
+            selectedRowKeys: selectedKeys,
+        });
     }
 
     onShowSizeChange = (current, pageSize) => {
@@ -186,9 +178,7 @@ class HostManage extends Component {
         confirmLoading: false,
         modalTitle: formatMessage({id: 'add'}),
         hasData: true,
-        deleteButton: true,
         selectedRowKeys: [],
-        selectedRows: [],
         pagination: {
             showQuickJumper: true,
             showSizeChanger: true,
@@ -298,15 +288,19 @@ class HostManage extends Component {
         const data = {
             hostID: this.state.selectedRowKeys
         };
-        const onDeleteHost = this.props.onDeleteHost;
-        confirm({
-            title: formatMessage({id: 'confirm_title'}),
-            content: formatMessage({id: 'total'}) + data.hostID.length,
-            okText: formatMessage({id: 'yes'}),
-            okType: 'danger',
-            cancelText: formatMessage({id: 'no'}),
-            onOk: () => onDeleteHost(data)
-        });
+        if(data.hostID.length > 0) {
+            const onDeleteHost = this.props.onDeleteHost;
+            confirm({
+                title: formatMessage({id: 'confirm_title'}),
+                content: formatMessage({id: 'total'}) + data.hostID.length,
+                okText: formatMessage({id: 'yes'}),
+                okType: 'danger',
+                cancelText: formatMessage({id: 'no'}),
+                onOk: () => onDeleteHost(data)
+            });
+        } else {
+            message.error(formatMessage({id: 'no_checked'}));
+        }
     }
 
     // delete one row
@@ -343,7 +337,7 @@ class HostManage extends Component {
                       >
                     </ModalForm>
                   </Col>
-                  <Col sapn={2}><Button onClick={this.onClickDelete} disabled={this.state.deleteButton} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
+                  <Col sapn={2}><Button onClick={this.onClickDelete} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
                 </Row>
                 <Row>
                   <Col>

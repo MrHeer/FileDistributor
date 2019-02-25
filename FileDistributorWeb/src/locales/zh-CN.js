@@ -44,5 +44,6 @@ export default {
     delete_error: '删除错误',
     edit_error: '编辑错误',
     test_error: '测试错误',
-    fill_form: '请正确完成表单'
+    fill_form: '请正确完成表单',
+    no_checked: '请至少选择一行'
 }
