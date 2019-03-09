@@ -19,6 +19,9 @@ public class HostEntity {
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
+    @Column(name = "port", nullable = false)
+    private String port;
+
     @Column(name = "user_name", nullable = false)
     private String userName;
 
@@ -55,6 +58,14 @@ public class HostEntity {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
     }
 
     public String getUserName() {

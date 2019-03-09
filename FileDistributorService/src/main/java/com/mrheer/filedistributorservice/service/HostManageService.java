@@ -1,9 +1,12 @@
 package com.mrheer.filedistributorservice.service;
 
+import com.jcraft.jsch.JSchException;
 import com.mrheer.filedistributorservice.entity.HostEntity;
 import com.mrheer.filedistributorservice.model.HostModel;
 import com.mrheer.filedistributorservice.model.Status;
+import com.mrheer.filedistributorservice.model.StatusModel;
 import com.mrheer.filedistributorservice.repository.HostRepository;
+import com.mrheer.filedistributorservice.util.Sftp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,5 +45,18 @@ public class HostManageService {
             hostRepository.deleteById(id);
         }
         return getHostModel();
+    }
+
+    public StatusModel testHost(HostEntity host) {
+        StatusModel statusModel = new StatusModel();
+
+        try {
+            statusModel = Sftp.testHost(host);
+        } catch (JSchException e) {
+            e.printStackTrace();
+            statusModel.setStatus(Status.ERROR);
+        }
+
+        return statusModel;
     }
 }

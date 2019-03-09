@@ -2,7 +2,6 @@ package com.mrheer.filedistributorservice.controller;
 
 import com.mrheer.filedistributorservice.entity.HostEntity;
 import com.mrheer.filedistributorservice.model.HostModel;
-import com.mrheer.filedistributorservice.model.Status;
 import com.mrheer.filedistributorservice.model.StatusModel;
 import com.mrheer.filedistributorservice.service.HostManageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ public class HostManageController {
         hostEntity.setGroupName(reqMap.get("group_name"));
         hostEntity.setHostName(reqMap.get("host_name"));
         hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setPort(reqMap.get("port"));
         hostEntity.setUserName(reqMap.get("user_name"));
         hostEntity.setPassword(reqMap.get("password"));
         return hostManageService.save(hostEntity);
@@ -53,15 +53,22 @@ public class HostManageController {
         hostEntity.setGroupName(reqMap.get("group_name"));
         hostEntity.setHostName(reqMap.get("host_name"));
         hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setPort(reqMap.get("port"));
         hostEntity.setUserName(reqMap.get("user_name"));
         hostEntity.setPassword(reqMap.get("password"));
         return hostManageService.save(hostEntity);
     }
 
     @RequestMapping(value = "/testHost", method = RequestMethod.POST)
-    public StatusModel testHost() {
-        StatusModel statusModel = new StatusModel();
-        statusModel.setStatus(Status.SUCCESS);
-        return statusModel;
+    public StatusModel testHost(@RequestBody Map<String, String> reqMap) {
+        HostEntity hostEntity = new HostEntity();
+        hostEntity.setId(Long.valueOf(reqMap.get("host_id")));
+        hostEntity.setGroupName(reqMap.get("group_name"));
+        hostEntity.setHostName(reqMap.get("host_name"));
+        hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setPort(reqMap.get("port"));
+        hostEntity.setUserName(reqMap.get("user_name"));
+        hostEntity.setPassword(reqMap.get("password"));
+        return hostManageService.testHost(hostEntity);
     }
 }
