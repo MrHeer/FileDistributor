@@ -52,10 +52,7 @@ class FileDistribute extends Component {
         autoExpandParent: true,
         checkedKeys: [],
         selectedKeys: [],
-        selectedHost: [{
-            // key: '';
-            // percent: 0;
-        }],
+        selectedHost: [],
 
         // SelectedHostTitles
         listData: [],
@@ -68,24 +65,6 @@ class FileDistribute extends Component {
         // 1. Limit the number of uploaded files
         // Only to show two recent uploaded files, and old ones will be replaced by the new
         // fileList = fileList.slice(-1);
-
-        // 2. Read from response and show file link
-        fileList = fileList.map((file) => {
-            if (file.response) {
-                // Component will show file.url as link
-                file.url = file.response.url;
-                file.uid = file.response.uid;
-            }
-            return file;
-        });
-
-        // 3. Filter successfully uploaded files according to response from server
-        // fileList = fileList.filter((file) => {
-        //     if (file.response) {
-        //         return file.response.status === 'success';
-        //     }
-        //     return false;
-        // });
 
         this.setState({ fileList });
     }
