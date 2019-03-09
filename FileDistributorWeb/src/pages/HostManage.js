@@ -73,6 +73,13 @@ const ModalForm = Form.create({ name: 'form_in_modal' })(
                         <Input />
                       )}
                      </FormItem>
+                    <FormItem label={formatMessage({id: 'port'})}>
+                    {getFieldDecorator('port', {
+                      rules: [{ required: true, message: formatMessage({id: 'port_message'}) }],
+                    })(
+                      <Input />
+                    )}
+                    </FormItem>
                     <FormItem label={formatMessage({id: 'user_name'})}>
                       {getFieldDecorator('user_name', {
                         initialValue: formData.user_name,
@@ -195,6 +202,7 @@ class HostManage extends Component {
             group_name: '',
             host_name: '',
             ip_address: '',
+            port: '',
             user_name: '',
             password: ''
         }
@@ -237,6 +245,7 @@ class HostManage extends Component {
             group_name: '',
             host_name: '',
             ip_address: '',
+            port: '',
             user_name: '',
             password: ''
         };
@@ -273,6 +282,7 @@ class HostManage extends Component {
             group_name: row.group_name,
             host_name: row.host_name,
             ip_address: row.ip_address,
+            port: '',
             user_name: '',
             password: ''
         };
