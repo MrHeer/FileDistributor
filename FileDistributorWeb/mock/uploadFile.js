@@ -1,6 +1,6 @@
 export default {
     'post /api/uploadFile': {
-        uid: 'uid5135',
+        url: '/uploadFile/xxx',
         status: 'success'
     }
 };
