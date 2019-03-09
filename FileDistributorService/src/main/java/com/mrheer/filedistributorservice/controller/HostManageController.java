@@ -2,6 +2,7 @@ package com.mrheer.filedistributorservice.controller;
 
 import com.mrheer.filedistributorservice.entity.HostEntity;
 import com.mrheer.filedistributorservice.model.HostModel;
+import com.mrheer.filedistributorservice.model.Status;
 import com.mrheer.filedistributorservice.model.StatusModel;
 import com.mrheer.filedistributorservice.service.HostManageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class HostManageController {
     @RequestMapping(value = "/testHost", method = RequestMethod.POST)
     public StatusModel testHost() {
         StatusModel statusModel = new StatusModel();
-        statusModel.setStatus("success");
+        statusModel.setStatus(Status.SUCCESS);
         return statusModel;
     }
 }

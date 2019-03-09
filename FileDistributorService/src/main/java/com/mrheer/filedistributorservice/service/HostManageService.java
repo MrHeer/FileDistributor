@@ -2,6 +2,7 @@ package com.mrheer.filedistributorservice.service;
 
 import com.mrheer.filedistributorservice.entity.HostEntity;
 import com.mrheer.filedistributorservice.model.HostModel;
+import com.mrheer.filedistributorservice.model.Status;
 import com.mrheer.filedistributorservice.repository.HostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class HostManageService {
             hostDataBeanList.add(hostDataBean);
         }
         hostModel.setHostData(hostDataBeanList);
-        hostModel.setStatus("success");
+        hostModel.setStatus(Status.SUCCESS);
         return hostModel;
     }
 
