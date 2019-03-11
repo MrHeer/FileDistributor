@@ -9,3 +9,7 @@
 ## Backend
 1. copy the output files('FileDistributorWeb/dist/') of frontend to 'FileDistributorService/src/main/resources/static/'
 2. gradle build
+
+## Todo
+1. add a progress bar for each host
+2. add 'failed retry' feature for each host
