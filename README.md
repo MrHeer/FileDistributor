@@ -11,5 +11,5 @@
 2. gradle build
 
 ## Todo
-1. add a progress bar for each host
-2. add 'failed retry' feature for each host
+1. add a status for each host after distribute
+2. add 'retry' button for failed host after distribute
