@@ -12,4 +12,4 @@
 
 ## Todo
 1. add a status for each host after distribute
-2. add 'retry' button for failed host after distribute
+2. add 'retry' feature after distribute exception
