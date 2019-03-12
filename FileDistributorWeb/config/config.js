@@ -13,6 +13,9 @@ export default {
             {
                 path: '/HostManage',
                 component: 'HostManage'
+            },
+            {
+                component: '404',
             }
         ]
     }],

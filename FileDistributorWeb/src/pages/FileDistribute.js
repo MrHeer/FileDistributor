@@ -19,7 +19,7 @@ import Styles from './FileDistributeStyles.less';
 
 const mapStateToProps = (state) => {
     const { treeData } = state['treeData'];
-    const { distributeStatus, selectedHost } = state['distribute'];
+    const { distributeStatus, selectedHost } = state['distributeData'];
     return {
         treeData,
         distributeStatus,
@@ -38,14 +38,14 @@ const mapDispatchToProps = (dispatch) => {
 
         onDistribute: (data) => {
             dispatch({
-                type: 'distribute/distribute',
+                type: 'distributeData/distribute',
                 payload: data
             });
         },
 
         onSelectHost: (data) => {
             dispatch({
-                type: 'distribute/selectHost',
+                type: 'distributeData/selectHost',
                 payload: data
             });
         }

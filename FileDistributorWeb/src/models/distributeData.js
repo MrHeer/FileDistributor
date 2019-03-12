@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { formatMessage } from 'umi/locale';
 
 export default {
-    namespace: 'distribute',
+    namespace: 'distributeData',
     state: {
         distributeStatus: {},
         selectedHost: []
@@ -22,9 +22,9 @@ export default {
     reducers: {
         distributeStatus(state, {payload: data}) {
             const { distributeStatus, selectedHost } = data;
-            if(distributeStatus.status === 'success') {
+            if(distributeStatus === 'success') {
                 message.success(formatMessage({ id: 'distribute_success' }));
-            } else if(distributeStatus.status === 'error') {
+            } else if(distributeStatus === 'error') {
                 message.error(formatMessage({ id: 'distribute_error' }));
             }
             return {

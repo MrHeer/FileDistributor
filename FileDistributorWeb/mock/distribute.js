@@ -1,7 +1,3 @@
-const distributeStatus = {
-    status: 'success'
-};
-
 const selectedHost = [
     {key: 'h-0', title: 'Host-0', status: 'success'},
     {key: 'H-1', title: 'Host-1', status: 'success'},
@@ -10,7 +6,7 @@ const selectedHost = [
 
 export default {
     'post /api/distribute': {
-        distributeStatus: distributeStatus,
+        distributeStatus: 'success',
         selectedHost: selectedHost
     }
 };
