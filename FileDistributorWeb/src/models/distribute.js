@@ -5,7 +5,8 @@ import { formatMessage } from 'umi/locale';
 export default {
     namespace: 'distribute',
     state: {
-        distributeStatus: {}
+        distributeStatus: {},
+        selectedHost: []
     },
 
     effects: {
@@ -20,14 +21,22 @@ export default {
 
     reducers: {
         distributeStatus(state, {payload: data}) {
-            const { distributeStatus } = data;
+            const { distributeStatus, selectedHost } = data;
             if(distributeStatus.status === 'success') {
                 message.success(formatMessage({ id: 'distribute_success' }));
             } else if(distributeStatus.status === 'error') {
                 message.error(formatMessage({ id: 'distribute_error' }));
             }
             return {
-                distributeStatus: distributeStatus
+                distributeStatus: distributeStatus,
+                selectedHost: selectedHost
+            };
+        },
+
+        selectHost(state, {payload: data}) {
+            const { selectedHost } = data;
+            return {
+                selectedHost: selectedHost
             };
         }
     }

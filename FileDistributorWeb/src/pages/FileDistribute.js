@@ -19,10 +19,11 @@ import Styles from './FileDistributeStyles.less';
 
 const mapStateToProps = (state) => {
     const { treeData } = state['treeData'];
-    const { distributeStatus } = state['distribute'];
+    const { distributeStatus, selectedHost } = state['distribute'];
     return {
         treeData,
         distributeStatus,
+        selectedHost,
         loading: state.loading.global
     };
 };
@@ -40,6 +41,13 @@ const mapDispatchToProps = (dispatch) => {
                 type: 'distribute/distribute',
                 payload: data
             });
+        },
+
+        onSelectHost: (data) => {
+            dispatch({
+                type: 'distribute/selectHost',
+                payload: data
+            });
         }
     };
 };
@@ -52,10 +60,6 @@ class FileDistribute extends Component {
         autoExpandParent: true,
         checkedKeys: [],
         selectedKeys: [],
-        selectedHost: [],
-
-        // SelectedHostTitles
-        listData: [],
         remotePath: ''
     }
 
@@ -83,39 +87,30 @@ class FileDistribute extends Component {
             checkedKeys
         });
 
-        // logical judgment about only inserting leaf into listData
+        // logical judgment about only inserting leaf into selectedHost
         const treeData = this.props.treeData;
-        const groupKeys = [];
+        const hostData = [];
         const selectedHost = [];
-        const selectedHostKeys = [];
-        const selectedHostTitles = [];
 
-        // get the groupKeys
+        // get the all hostData
         for(let group of treeData.values()) {
-            groupKeys.push(group.key);
+            for(let host of group.children.values()) {
+                hostData.push(host);
+            }
         }
 
         // get the selectedHost
-        for(let key of checkedKeys.values()) {
-            if(!groupKeys.includes(key)) {
-                selectedHostKeys.push(key);
-                selectedHost.push({key: key, percent: 0});
+        for(let host of hostData.values()) {
+            if(checkedKeys.includes(host.key)) {
+                // status: 'wait', 'success', 'error'
+                selectedHost.push({key: host.key, title: host.title, status: 'wait'});
             }
         }
 
-        // get the selectedHostTitles
-        for(let group of treeData.values()) {
-            for(let host of group.children.values()) {
-                if(selectedHostKeys.includes(host.key)) {
-                    selectedHostTitles.push(host.title);
-                }
-            }
-        }
-
-        this.setState({
-            listData: selectedHostTitles,
+        const data = {
             selectedHost: selectedHost
-        });
+        };
+        this.props.onSelectHost(data);
     }
 
     handleRemotePathChange = (e) => {
@@ -125,7 +120,8 @@ class FileDistribute extends Component {
     }
 
     handleDistribute = () => {
-        const {fileList, selectedHost, remotePath} = this.state;
+        const {fileList, remotePath} = this.state;
+        const {selectedHost} = this.props;
         const data = {
             fileList,
             selectedHost,
@@ -150,9 +146,40 @@ class FileDistribute extends Component {
     })
 
     renderList = item => {
-        return (
-            <List.Item>{item}</List.Item>
-        );
+        if(item.status === 'wait') {
+            return (
+                <span className={Styles['override-ant-list']}>
+                  <List.Item>
+                    <Row>
+                      <Col span={23}>{item.title}</Col>
+                      <Col span={1}><Icon type="clock-circle" /></Col>
+                    </Row>
+                  </List.Item>
+                </span>
+            );
+        } else if(item.status === 'success') {
+            return (
+                <span className={Styles['override-ant-list']}>
+                  <List.Item>
+                    <Row>
+                      <Col span={23}>{item.title}</Col>
+                      <Col span={1}><Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" /></Col>
+                    </Row>
+                  </List.Item>
+                </span>
+            );
+        } else {
+            return (
+                <span className={Styles['override-ant-list']}>
+                  <List.Item>
+                    <Row>
+                      <Col span={23}>{item.title}</Col>
+                      <Col span={1}><Icon type="close-circle" theme="twoTone" twoToneColor="#eb2f96" /></Col>
+                    </Row>
+                  </List.Item>
+                </span>
+            );
+        }
     }
 
     render() {
@@ -235,7 +262,7 @@ class FileDistribute extends Component {
                           <InfiniteScroll loadMore={()=>{return}}>
                             <List
                               size="small"
-                              dataSource={ this.state.listData }
+                              dataSource={ this.props.selectedHost }
                               renderItem={ this.renderList } />
                           </InfiniteScroll>
                         </div>
