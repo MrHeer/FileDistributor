@@ -19,11 +19,11 @@ import Styles from './FileDistributeStyles.less';
 
 const mapStateToProps = (state) => {
     const { treeData } = state['treeData'];
-    const { distributeStatus, selectedHost } = state['distributeData'];
+    const { selectedHost, buttonType } = state['distributeData'];
     return {
         treeData,
-        distributeStatus,
         selectedHost,
+        buttonType,
         loading: state.loading.global
     };
 };
@@ -43,9 +43,9 @@ const mapDispatchToProps = (dispatch) => {
             });
         },
 
-        onSelectHost: (data) => {
+        updateSelectHost: (data) => {
             dispatch({
-                type: 'distributeData/selectHost',
+                type: 'distributeData/updateSelectHost',
                 payload: data
             });
         }
@@ -110,7 +110,16 @@ class FileDistribute extends Component {
         const data = {
             selectedHost: selectedHost
         };
-        this.props.onSelectHost(data);
+        this.props.updateSelectHost(data);
+    }
+
+    resetSelectedHost= () => {
+        const { selectedHost } = this.props;
+        selectedHost.forEach(host => {host.status = 'wait'});
+        const data = {
+            selectedHost: selectedHost
+        };
+        this.props.updateSelectHost(data);
     }
 
     handleRemotePathChange = (e) => {
@@ -178,6 +187,23 @@ class FileDistribute extends Component {
                     </Row>
                   </List.Item>
                 </span>
+            );
+        }
+    }
+
+    renderButton = () => {
+        const { buttonType } = this.props;
+        if(buttonType === 'distribute') {
+            return (
+                <Button onClick={this.handleDistribute}><Icon type="rocket" /><FormattedMessage id='distribute' /></Button>
+            );
+        } else if(buttonType === 'retry') {
+            return (
+                <Button onClick={this.handleDistribute}><Icon type="reload" /><FormattedMessage id='retry' /></Button>
+            );
+        } else {
+            return (
+                <Button onClick={this.resetSelectedHost}><Icon type="rollback" /><FormattedMessage id='reset' /></Button>
             );
         }
     }
@@ -272,7 +298,7 @@ class FileDistribute extends Component {
                       <Col><Input onChange={this.handleRemotePathChange} placeholder={ formatMessage({id: 'remote_path'})} /></Col>
                     </Row>
                     <Row type="flex" justify="center">
-                      <Col><Button onClick={this.handleDistribute}><Icon type="rocket" /><FormattedMessage id='distribute' /></Button></Col>
+                      <Col>{ this.renderButton() }</Col>
                     </Row>
                   </Card>
                 </Col>

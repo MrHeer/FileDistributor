@@ -8,6 +8,8 @@ export default {
     chose_host: '选择主机',
     distribute_file: '分发文件',
     distribute: '分发',
+    retry: '重试',
+    reset: '重置',
     remote_path: '远程路径...',
     checked: '所选主机',
     upload: '上传',

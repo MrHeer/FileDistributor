@@ -8,6 +8,8 @@ export default {
     chose_host: 'Chose Host',
     distribute_file: 'Distribute File',
     distribute: 'Distribute',
+    retry: 'Retry',
+    reset: 'Reset',
     remote_path: 'remote path...',
     checked: 'Selected Host',
     upload: 'Upload',

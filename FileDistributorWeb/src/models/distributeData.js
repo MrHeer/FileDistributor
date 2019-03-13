@@ -6,37 +6,44 @@ export default {
     namespace: 'distributeData',
     state: {
         distributeStatus: {},
-        selectedHost: []
+        selectedHost: [],
+        // buttonType: 'distribute', 'retry', 'reset'
+        buttonType: 'distribute'
     },
 
     effects: {
         *distribute({ payload }, { call, put }) {
             const data = yield call(distribute, payload);
             yield put({
-                type: 'distributeStatus',
+                type: 'distributeData',
                 payload: data
             });
         }
     },
 
     reducers: {
-        distributeStatus(state, {payload: data}) {
+        distributeData(state, {payload: data}) {
             const { distributeStatus, selectedHost } = data;
+            var buttonType;
             if(distributeStatus === 'success') {
+                buttonType = 'reset';
                 message.success(formatMessage({ id: 'distribute_success' }));
             } else if(distributeStatus === 'error') {
+                buttonType = 'retry';
                 message.error(formatMessage({ id: 'distribute_error' }));
             }
             return {
                 distributeStatus: distributeStatus,
-                selectedHost: selectedHost
+                selectedHost: selectedHost,
+                buttonType: buttonType
             };
         },
 
-        selectHost(state, {payload: data}) {
+        updateSelectHost(state, {payload: data}) {
             const { selectedHost } = data;
             return {
-                selectedHost: selectedHost
+                selectedHost: selectedHost,
+                buttonType: 'distribute'
             };
         }
     }
