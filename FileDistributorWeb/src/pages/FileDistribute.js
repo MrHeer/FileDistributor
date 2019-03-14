@@ -195,7 +195,7 @@ class FileDistribute extends Component {
                   <List.Item>
                     <Row>
                       <Col span={22}>{item.title}</Col>
-                      <Col span={2}><Icon type="info-circle" theme="twoTone" twoToneColor="#faad14" /></Col>
+                      <Col span={2}><Icon type="exclamation-circle" theme="twoTone" twoToneColor="#faad14" /></Col>
                     </Row>
                   </List.Item>
                 </span>
