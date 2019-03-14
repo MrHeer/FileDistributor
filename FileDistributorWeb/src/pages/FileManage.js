@@ -243,6 +243,7 @@ class FileManage extends Component {
     }
 
     componentDidMount() {
+        this.props.onQueryHost();
         document.addEventListener("keyup", this.onBackKeyDown, true);
     }
 
