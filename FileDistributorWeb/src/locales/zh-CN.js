@@ -16,6 +16,8 @@ export default {
     upload: '上传',
     distribute_success: '分发成功',
     distribute_error: '分发错误',
+    safe: '安全',
+    overwrite: '覆盖',
 
     // FileManage
     reload: '刷新',

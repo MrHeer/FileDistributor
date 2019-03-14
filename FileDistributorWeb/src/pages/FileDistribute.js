@@ -8,12 +8,15 @@ import { Row,
          Tree,
          Input,
          List,
+         Radio,
          Spin
        } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage, formatMessage } from 'umi/locale';
 import { connect } from 'dva';
+
 const { TreeNode } = Tree;
+const RadioGroup = Radio.Group;
 
 import Styles from './FileDistributeStyles.less';
 
@@ -60,7 +63,9 @@ class FileDistribute extends Component {
         autoExpandParent: true,
         checkedKeys: [],
         selectedKeys: [],
-        remotePath: ''
+        remotePath: '',
+        // distribute type: 'safe', 'overwrite'
+        type: 'safe'
     }
 
     handleChange = (info) => {
@@ -102,7 +107,7 @@ class FileDistribute extends Component {
         // get the selectedHost
         for(let host of hostData.values()) {
             if(checkedKeys.includes(host.key)) {
-                // status: 'wait', 'success', 'error'
+                // status: 'wait', 'success', 'exist', 'error'
                 selectedHost.push({key: host.key, title: host.title, status: 'wait'});
             }
         }
@@ -111,6 +116,12 @@ class FileDistribute extends Component {
             selectedHost: selectedHost
         };
         this.props.updateSelectHost(data);
+    }
+
+    onRadioChange = (e) => {
+        this.setState({
+            type: e.target.value
+        });
     }
 
     resetSelectedHost = () => {
@@ -129,12 +140,13 @@ class FileDistribute extends Component {
     }
 
     handleDistribute = () => {
-        const {fileList, remotePath} = this.state;
+        const {fileList, remotePath, type} = this.state;
         const {selectedHost} = this.props;
         const data = {
             fileList,
             selectedHost,
-            remotePath
+            remotePath,
+            type
         };
         this.props.onDistribute(data);
     }
@@ -160,8 +172,8 @@ class FileDistribute extends Component {
                 <span className={Styles['override-ant-list']}>
                   <List.Item>
                     <Row>
-                      <Col span={23}>{item.title}</Col>
-                      <Col span={1}><Icon type="clock-circle" /></Col>
+                      <Col span={22}>{item.title}</Col>
+                      <Col span={2}><Icon type="clock-circle" /></Col>
                     </Row>
                   </List.Item>
                 </span>
@@ -171,8 +183,19 @@ class FileDistribute extends Component {
                 <span className={Styles['override-ant-list']}>
                   <List.Item>
                     <Row>
-                      <Col span={23}>{item.title}</Col>
-                      <Col span={1}><Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" /></Col>
+                      <Col span={22}>{item.title}</Col>
+                      <Col span={2}><Icon type="check-circle" theme="twoTone" twoToneColor="#52c41a" /></Col>
+                    </Row>
+                  </List.Item>
+                </span>
+            );
+        } else if(item.status === 'exist') {
+            return (
+                <span className={Styles['override-ant-list']}>
+                  <List.Item>
+                    <Row>
+                      <Col span={22}>{item.title}</Col>
+                      <Col span={2}><Icon type="info-circle" theme="twoTone" twoToneColor="#faad14" /></Col>
                     </Row>
                   </List.Item>
                 </span>
@@ -182,8 +205,8 @@ class FileDistribute extends Component {
                 <span className={Styles['override-ant-list']}>
                   <List.Item>
                     <Row>
-                      <Col span={23}>{item.title}</Col>
-                      <Col span={1}><Icon type="close-circle" theme="twoTone" twoToneColor="#eb2f96" /></Col>
+                      <Col span={22}>{item.title}</Col>
+                      <Col span={2}><Icon type="close-circle" theme="twoTone" twoToneColor="#eb2f96" /></Col>
                     </Row>
                   </List.Item>
                 </span>
@@ -226,7 +249,7 @@ class FileDistribute extends Component {
                     <div
                       style={{
                           overflow: 'auto',
-                          height: 420
+                          height: 450
                       }}
                       >
                       <InfiniteScroll loadMore={()=>{return}}>
@@ -249,7 +272,7 @@ class FileDistribute extends Component {
                     <div
                       style={{
                           overflow: 'auto',
-                          height: 420
+                          height: 450
                       }}
                       >
                       <InfiniteScroll loadMore={()=>{return}}>
@@ -282,7 +305,7 @@ class FileDistribute extends Component {
                         <div
                           style={{
                               overflow: 'auto',
-                              height: 300
+                              height: 280
                           }}
                           >
                           <InfiniteScroll loadMore={()=>{return}}>
@@ -296,6 +319,17 @@ class FileDistribute extends Component {
                     </Row>
                     <Row style={{ marginTop: 20, marginBottom: 20 }}>
                       <Col><Input allowClear onChange={this.handleRemotePathChange} placeholder={ formatMessage({id: 'remote_path'})} /></Col>
+                    </Row>
+                    <Row style={{ marginBottom: 20 }} type="flex" justify="center">
+                      <Col>
+                        <RadioGroup
+                          onChange={this.onRadioChange}
+                          value={this.state.type}
+                          >
+                          <Radio value='safe'><FormattedMessage id='safe' /></Radio>
+                          <Radio value='overwrite'><FormattedMessage id='overwrite' /></Radio>
+                        </RadioGroup>
+                      </Col>
                     </Row>
                     <Row type="flex" justify="center">
                       <Col>{ this.renderButton() }</Col>

@@ -16,6 +16,8 @@ export default {
     upload: 'Upload',
     distribute_success: 'Distribut success',
     distribute_error: 'Distribut error',
+    safe: 'Safe',
+    overwrite: 'Overwrite',
 
     // FileManage
     reload: 'Refresh',
