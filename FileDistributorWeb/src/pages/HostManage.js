@@ -128,7 +128,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onDidMount: () => {
+        onQueryHost: () => {
             dispatch({
                 type: 'hostData/fetch'
             });
@@ -301,7 +301,7 @@ class HostManage extends Component {
         if(data.hostID.length > 0) {
             const onDeleteHost = this.props.onDeleteHost;
             confirm({
-                title: formatMessage({id: 'confirm_title'}),
+                title: formatMessage({id: 'host_confirm_title'}),
                 content: formatMessage({id: 'total'}) + data.hostID.length,
                 okText: formatMessage({id: 'yes'}),
                 okType: 'danger',
@@ -326,7 +326,7 @@ class HostManage extends Component {
     }
 
     componentDidMount() {
-        this.props.onDidMount();
+        this.props.onQueryHost();
     }
 
     render() {
@@ -347,7 +347,7 @@ class HostManage extends Component {
                       >
                     </ModalForm>
                   </Col>
-                  <Col sapn={2}><Button onClick={this.onClickDelete} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
+                  <Col span={2}><Button onClick={this.onClickDelete} type="danger"><Icon type="minus-circle" /><FormattedMessage id='delete' /></Button></Col>
                 </Row>
                 <Row>
                   <Col>

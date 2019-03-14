@@ -26,8 +26,10 @@ class BasicLayout extends Component {
         const pathName = this.props.children.props.location.pathname;
         if(pathName === '/FileDistribute') {
             this.state.selectedKey = '1';
-        } else if(pathName === '/HostManage') {
+        } else if(pathName === '/FileManage') {
             this.state.selectedKey = '2';
+        } else if(pathName === '/HostManage') {
+            this.state.selectedKey = '3';
         }
 
         return (
@@ -45,7 +47,8 @@ class BasicLayout extends Component {
                       style={{ lineHeight: '64px' }}
                       >
                       <Menu.Item key="1"><Link to="/FileDistribute"><Icon type="file" /><FormattedMessage id="file_distribute" /></Link></Menu.Item>
-                      <Menu.Item key="2"><Link to="/HostManage"><Icon type="desktop" /><FormattedMessage id="host_manage" /></Link></Menu.Item>
+                      <Menu.Item key="2"><Link to="/FileManage"><Icon type="folder" /><FormattedMessage id="file_manage" /></Link></Menu.Item>
+                      <Menu.Item key="3"><Link to="/HostManage"><Icon type="desktop" /><FormattedMessage id="host_manage" /></Link></Menu.Item>
                     </Menu>
                   </Col>
                   <Col span={1}>

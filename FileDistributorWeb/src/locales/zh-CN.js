@@ -1,6 +1,7 @@
 export default {
     // FileDistribute
     file_distribute: '文件分发',
+    file_manage: '文件管理',
     host_manage: '主机管理',
     project_name: '文件分发平台',
     language: 'English',
@@ -16,6 +17,15 @@ export default {
     distribute_success: '分发成功',
     distribute_error: '分发错误',
 
+    // FileManage
+    reload: '刷新',
+    keyword: '关键字...',
+    file_name: '文件名',
+    file_size: '文件大小',
+    modify_time: '修改时间',
+    file_confirm_title: '您确定要删除这些文件吗？',
+    back: '返回',
+
     // HostManage
     hosts_title: '主机列表',
     group_name: '组名',
@@ -29,7 +39,7 @@ export default {
     edit: '编辑',
     add: '新增',
     pop_confirm_title: '确认删除吗？',
-    confirm_title: '您确定要删除这些主机吗？',
+    host_confirm_title: '您确定要删除这些主机吗？',
     total: '共计：',
     yes: '确认',
     no: '取消',

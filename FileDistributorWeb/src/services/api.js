@@ -1,3 +1,4 @@
+import { stringify } from 'qs';
 import request from '@/utils/request';
 
 export async function getTreeData() {
@@ -46,6 +47,19 @@ export async function testHost(params) {
 
 export async function distribute(params) {
     return request('/api/distribute', {
+        method: 'POST',
+        body: {
+            ...params
+        }
+    });
+}
+
+export async function getFileData(params) {
+    return request(`/api/getFileData?${stringify(params)}`);
+}
+
+export async function deleteFile(params) {
+    return request('/api/deleteFile', {
         method: 'POST',
         body: {
             ...params

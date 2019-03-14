@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onDidMount: () => {
+        onQueryTree: () => {
             dispatch({
                 type: 'treeData/fetch'
             });
@@ -113,7 +113,7 @@ class FileDistribute extends Component {
         this.props.updateSelectHost(data);
     }
 
-    resetSelectedHost= () => {
+    resetSelectedHost = () => {
         const { selectedHost } = this.props;
         selectedHost.forEach(host => {host.status = 'wait'});
         const data = {
@@ -140,7 +140,7 @@ class FileDistribute extends Component {
     }
 
     componentDidMount() {
-        this.props.onDidMount();
+        this.props.onQueryTree();
     }
 
     renderTreeNodes = data => data.map((item) => {
@@ -295,7 +295,7 @@ class FileDistribute extends Component {
                       </Col>
                     </Row>
                     <Row style={{ marginTop: 20, marginBottom: 20 }}>
-                      <Col><Input onChange={this.handleRemotePathChange} placeholder={ formatMessage({id: 'remote_path'})} /></Col>
+                      <Col><Input allowClear onChange={this.handleRemotePathChange} placeholder={ formatMessage({id: 'remote_path'})} /></Col>
                     </Row>
                     <Row type="flex" justify="center">
                       <Col>{ this.renderButton() }</Col>

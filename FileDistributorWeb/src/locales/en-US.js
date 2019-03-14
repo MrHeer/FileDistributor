@@ -1,6 +1,7 @@
 export default {
     // FileDistribute
     file_distribute: 'FileDistribute',
+    file_manage: 'FileManage',
     host_manage: 'HostManage',
     project_name: 'File Distributor',
     language: '中文',
@@ -16,6 +17,15 @@ export default {
     distribute_success: 'Distribut success',
     distribute_error: 'Distribut error',
 
+    // FileManage
+    reload: 'Refresh',
+    keyword: 'keyword...',
+    file_name: 'File Name',
+    file_size: 'File Size',
+    modify_time: 'Modify Time',
+    file_confirm_title: 'Are you sure delete these file?',
+    back: 'Back',
+
     // HostManage
     hosts_title: 'Host List',
     group_name: 'Group Name',
@@ -29,7 +39,7 @@ export default {
     edit: 'Edit',
     add: 'Add',
     pop_confirm_title: 'Sure to delete?',
-    confirm_title: 'Are you sure delete these host?',
+    host_confirm_title: 'Are you sure delete these host?',
     total: 'Total: ',
     yes: 'Yes',
     no: 'No',

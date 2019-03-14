@@ -1,5 +1,5 @@
 const hostData = [];
-for (let i = 1; i <= 60; i++) {
+for (let i = 1; i <= 6; i++) {
     hostData.push({
         key: `${i}`,
         group_name: 'Group1',
@@ -8,7 +8,7 @@ for (let i = 1; i <= 60; i++) {
     });
 }
 
-for (let i = 61; i <= 120; i++) {
+for (let i = 7; i <= 12; i++) {
     hostData.push({
         key: `${i}`,
         group_name: 'Group2',

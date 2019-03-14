@@ -11,8 +11,24 @@ export default {
                 component: 'FileDistribute'
             },
             {
+                path: '/FileManage',
+                component: 'FileManage'
+            },
+            {
                 path: '/HostManage',
                 component: 'HostManage'
+            },
+            {
+                path: '/exception/403',
+                component: '403'
+            },
+            {
+                path: '/exception/404',
+                component: '404'
+            },
+            {
+                path: '/exception/500',
+                component: '500'
             },
             {
                 component: '404',
