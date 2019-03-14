@@ -93,13 +93,13 @@ class FileManage extends Component {
         sorter: (a, b) => a.group_name > b.group_name ? 1 : -1,
         width: 450,
         render: (text, record) => {
+            const { hostID, remotePath } = this.state;
+            const params = {
+                hostID: hostID,
+                remotePath: remotePath,
+                fileName: record.name
+            };
             if(record.type === '-') {
-                const { hostID, remotePath } = this.state;
-                const params = {
-                    hostID: hostID,
-                    remotePath: remotePath,
-                    fileName: record.name
-                };
                 return (
                     <a href={`/api/download?${stringify(params)}`} download={record.name}><Icon type="file" style={{ marginRight: '1em' }} />{record.name}</a>
                 );
@@ -109,7 +109,7 @@ class FileManage extends Component {
                 );
             } else {
                 return (
-                    <a onClick={() => this.handleChangePath(record)}><Icon type="file-unknown" style={{ marginRight: '1em' }} />{record.name}</a>
+                    <a href={`/api/download?${stringify(params)}`} download={record.name}><Icon type="file-unknown" style={{ marginRight: '1em' }} />{record.name}</a>
                 );
             }
         }
