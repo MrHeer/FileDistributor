@@ -62,7 +62,6 @@ public class HostManageController {
     @RequestMapping(value = "/testHost", method = RequestMethod.POST)
     public StatusModel testHost(@RequestBody Map<String, String> reqMap) {
         HostEntity hostEntity = new HostEntity();
-        hostEntity.setId(Long.valueOf(reqMap.get("host_id")));
         hostEntity.setGroupName(reqMap.get("group_name"));
         hostEntity.setHostName(reqMap.get("host_name"));
         hostEntity.setIpAddress(reqMap.get("ip_address"));

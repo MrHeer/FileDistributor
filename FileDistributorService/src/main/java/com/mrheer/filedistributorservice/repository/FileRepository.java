@@ -1,8 +1,8 @@
-package com.mrheer.filedistributorservice.util;
+package com.mrheer.filedistributorservice.repository;
 
 import java.util.Hashtable;
 
-public class FileManager {
+public class FileRepository {
     private static final Hashtable<String, byte[]> fileRepository = new Hashtable<>();
 
     public static void add(String uid, byte[] bytes) {

@@ -4,8 +4,8 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 import com.mrheer.filedistributorservice.entity.HostEntity;
 import com.mrheer.filedistributorservice.model.*;
+import com.mrheer.filedistributorservice.repository.FileRepository;
 import com.mrheer.filedistributorservice.repository.HostRepository;
-import com.mrheer.filedistributorservice.util.FileManager;
 import com.mrheer.filedistributorservice.util.Sftp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -65,13 +65,10 @@ public class FileDistributeService {
 
             // save file to the hashTable
             byte[] bytes = file.getBytes().clone();
-            FileManager.add(uid, bytes);
+            FileRepository.add(uid, bytes);
             uploadStatusModel.setStatus(Status.SUCCESS);
             uploadStatusModel.setUid(uid);
-        } catch (IOException e) {
-            e.printStackTrace();
-            uploadStatusModel.setStatus(Status.ERROR);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (IOException | NoSuchAlgorithmException e) {
             e.printStackTrace();
             uploadStatusModel.setStatus(Status.ERROR);
         }
@@ -81,50 +78,41 @@ public class FileDistributeService {
 
     public DistributeStatusModel distribute(DistributeModel data) {
         DistributeStatusModel distributeStatusModel = new DistributeStatusModel();
-        DistributeStatusModel.DistributeStatusBean statusBean = new DistributeStatusModel.DistributeStatusBean();
+        distributeStatusModel.setDistributeStatus(Status.SUCCESS);
+        distributeStatusModel.setSelectedHost(data.getSelectedHost());
 
+        // check form data
         if (data.getRemotePath().isEmpty() || data.getFileList().isEmpty() || data.getSelectedHost().isEmpty()) {
-            statusBean.setStatus(Status.ERROR);
-            distributeStatusModel.setDistributeStatus(statusBean);
+            distributeStatusModel.setDistributeStatus(Status.ERROR);
             return distributeStatusModel;
         }
 
         // add all file to the fileMap
         Map<String, byte[]> fileMap = new TreeMap<>();
         for (DistributeModel.FileListBean fileInfo : data.getFileList()) {
-            fileMap.put(fileInfo.getName(), FileManager.get(fileInfo.getResponse().getUid()));
+            fileMap.put(fileInfo.getName(), FileRepository.get(fileInfo.getResponse().getUid()));
         }
 
         // distribute the files to host
-        for (DistributeModel.SelectedHostBean hostInfo : data.getSelectedHost()) {
-            HostEntity host = hostRepository.getOne(Long.valueOf(hostInfo.getKey()));
-            try {
-                Sftp.distribute(host, fileMap, data.getRemotePath());
-            } catch (JSchException e) {
-                e.printStackTrace();
-                statusBean.setStatus(Status.ERROR);
-                distributeStatusModel.setDistributeStatus(statusBean);
-                return distributeStatusModel;
-            } catch (SftpException e) {
-                e.printStackTrace();
-                statusBean.setStatus(Status.ERROR);
-                distributeStatusModel.setDistributeStatus(statusBean);
-                return distributeStatusModel;
-            } catch (IOException e) {
-                e.printStackTrace();
-                statusBean.setStatus(Status.ERROR);
-                distributeStatusModel.setDistributeStatus(statusBean);
-                return distributeStatusModel;
+        for (SelectedHost hostInfo : data.getSelectedHost()) {
+            // only distribute not success host
+            if (!hostInfo.getStatus().equalsIgnoreCase(Status.SUCCESS)) {
+                try {
+                    HostEntity host = hostRepository.getOne(Long.valueOf(hostInfo.getKey()));
+                    String status = Sftp.distribute(host, fileMap, data.getRemotePath(), data.getType());
+                    hostInfo.setStatus(status);
+                } catch (JSchException | SftpException e) {
+                    e.printStackTrace();
+                    hostInfo.setStatus(Status.ERROR);
+                    distributeStatusModel.setDistributeStatus(Status.ERROR);
+                }
             }
         }
 
         // clear memory file data
-        if (FileManager.getSize() > 10) {
-            FileManager.clear();
+        if (FileRepository.getSize() > 10) {
+            FileRepository.clear();
         }
-
-        statusBean.setStatus(Status.SUCCESS);
-        distributeStatusModel.setDistributeStatus(statusBean);
 
         return distributeStatusModel;
     }

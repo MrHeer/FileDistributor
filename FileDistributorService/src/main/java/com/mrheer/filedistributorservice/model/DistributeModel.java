@@ -5,14 +5,16 @@ import java.util.List;
 public class DistributeModel {
 
     /**
-     * fileList : [{"uid":"d0c54f6a94729c51503048b416fa3817","lastModified":1547135172668,"lastModifiedDate":"2019-01-10T15:46:12.668Z","name":"201811_Bill.pdf","size":226030,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552119770912-2"},"status":"done","response":{"uid":"d0c54f6a94729c51503048b416fa3817","status":"success"}},{"uid":"a0cfbd8b0bb2f1f0cdd6e8fc00d7bac3","lastModified":1547135213133,"lastModifiedDate":"2019-01-10T15:46:53.133Z","name":"201812_Bill.pdf","size":227210,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552119770912-3"},"status":"done","response":{"uid":"a0cfbd8b0bb2f1f0cdd6e8fc00d7bac3","status":"success"}}]
-     * selectedHost : [{"key":"7","percent":0},{"key":"8","percent":0},{"key":"9","percent":0}]
-     * remotePath : /tmp/upload
+     * fileList : [{"uid":"rc-upload-1552719767003-2","lastModified":1547135172668,"lastModifiedDate":"2019-01-10T15:46:12.668Z","name":"201811_Bill.pdf","size":226030,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552719767003-2"},"status":"done","response":{"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}},{"uid":"rc-upload-1552719767003-3","lastModified":1547135213133,"lastModifiedDate":"2019-01-10T15:46:53.133Z","name":"201812_Bill.pdf","size":227210,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552719767003-3"},"status":"done","response":{"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}}]
+     * selectedHost : [{"key":"H-9","title":"Host-9","status":"wait"},{"key":"H-10","title":"Host-10","status":"wait"},{"key":"H-11","title":"Host-11","status":"wait"},{"key":"H-12","title":"Host-12","status":"wait"},{"key":"H-13","title":"Host-13","status":"wait"}]
+     * remotePath : /upload
+     * type : safe
      */
 
     private String remotePath;
+    private String type;
     private List<FileListBean> fileList;
-    private List<SelectedHostBean> selectedHost;
+    private List<SelectedHost> selectedHost;
 
     public String getRemotePath() {
         return remotePath;
@@ -20,6 +22,14 @@ public class DistributeModel {
 
     public void setRemotePath(String remotePath) {
         this.remotePath = remotePath;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public List<FileListBean> getFileList() {
@@ -30,26 +40,26 @@ public class DistributeModel {
         this.fileList = fileList;
     }
 
-    public List<SelectedHostBean> getSelectedHost() {
+    public List<SelectedHost> getSelectedHost() {
         return selectedHost;
     }
 
-    public void setSelectedHost(List<SelectedHostBean> selectedHost) {
+    public void setSelectedHost(List<SelectedHost> selectedHost) {
         this.selectedHost = selectedHost;
     }
 
     public static class FileListBean {
         /**
-         * uid : d0c54f6a94729c51503048b416fa3817
+         * uid : rc-upload-1552719767003-2
          * lastModified : 1547135172668
          * lastModifiedDate : 2019-01-10T15:46:12.668Z
          * name : 201811_Bill.pdf
          * size : 226030
          * type : application/pdf
          * percent : 100
-         * originFileObj : {"uid":"rc-upload-1552119770912-2"}
+         * originFileObj : {"uid":"rc-upload-1552719767003-2"}
          * status : done
-         * response : {"uid":"d0c54f6a94729c51503048b416fa3817","status":"success"}
+         * response : {"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}
          */
 
         private String uid;
@@ -145,7 +155,7 @@ public class DistributeModel {
 
         public static class OriginFileObjBean {
             /**
-             * uid : rc-upload-1552119770912-2
+             * uid : rc-upload-1552719767003-2
              */
 
             private String uid;
@@ -161,11 +171,13 @@ public class DistributeModel {
 
         public static class ResponseBean {
             /**
-             * uid : d0c54f6a94729c51503048b416fa3817
+             * uid : uid-xxx
+             * url : /uploadFile/xxx
              * status : success
              */
 
             private String uid;
+            private String url;
             private String status;
 
             public String getUid() {
@@ -176,6 +188,14 @@ public class DistributeModel {
                 this.uid = uid;
             }
 
+            public String getUrl() {
+                return url;
+            }
+
+            public void setUrl(String url) {
+                this.url = url;
+            }
+
             public String getStatus() {
                 return status;
             }
@@ -183,32 +203,6 @@ public class DistributeModel {
             public void setStatus(String status) {
                 this.status = status;
             }
-        }
-    }
-
-    public static class SelectedHostBean {
-        /**
-         * key : 7
-         * percent : 0
-         */
-
-        private String key;
-        private int percent;
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public int getPercent() {
-            return percent;
-        }
-
-        public void setPercent(int percent) {
-            this.percent = percent;
         }
     }
 }
