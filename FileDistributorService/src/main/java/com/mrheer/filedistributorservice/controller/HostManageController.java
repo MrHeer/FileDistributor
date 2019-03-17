@@ -21,7 +21,7 @@ public class HostManageController {
     private HostManageService hostManageService;
 
     @RequestMapping(value = "/getHostData", method = RequestMethod.GET)
-    public HostModel getHost() {
+    public HostModel getHostData() {
         return hostManageService.getHostModel();
     }
 

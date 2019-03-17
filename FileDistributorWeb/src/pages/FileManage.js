@@ -186,6 +186,7 @@ class FileManage extends Component {
         const data = {
             hostID: this.state.hostID,
             remotePath: this.state.remotePath,
+            keyword: this.state.keyword,
             files: this.state.selectedFiles
         };
         if(data.files.length > 0) {
@@ -207,6 +208,7 @@ class FileManage extends Component {
     handleDelete = (record) => {
         const data = {
             hostID: this.state.hostID,
+            keyword: this.state.keyword,
             remotePath: this.state.remotePath,
             files: [record.name]
         };

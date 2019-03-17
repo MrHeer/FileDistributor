@@ -8,10 +8,11 @@ import com.mrheer.filedistributorservice.model.Status;
 import com.mrheer.filedistributorservice.model.StatusModel;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class Sftp {
@@ -20,6 +21,7 @@ public class Sftp {
         Session session = jSch.getSession(host.getUserName(), host.getIpAddress());
         session.setPort(Integer.parseInt(host.getPort()));
         session.setPassword(host.getPassword());
+        session.setTimeout(3000);
         Properties config = new Properties();
         config.put("StrictHostKeyChecking", "no");
         session.setConfig(config);
@@ -72,25 +74,85 @@ public class Sftp {
         List<FileModel.FileDataBean> fileList = new ArrayList<>();
         ChannelSftp channel = getChannel(host);
         Vector lsEntryVector = new Vector<>();
-        lsEntryVector = channel.ls(path + "*" + keyword + "*");
-        Stream stream = lsEntryVector.parallelStream();
-        stream.forEach(new Consumer() {
-            @Override
-            public void accept(Object o) {
-                ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) o;
-                FileModel.FileDataBean file = new FileModel.FileDataBean();
-                SftpATTRS attrs = lsEntry.getAttrs();
-                file.setKey(String.valueOf(attrs.hashCode()));
-                file.setType(String.valueOf(attrs.getFlags()));
-                file.setName(lsEntry.getFilename());
-                file.setSize(String.valueOf(attrs.getSize()));
-                file.setModify_time(attrs.getMtimeString());
-                fileList.add(file);
-            }
+        Path filePath = Paths.get(path, "*" + keyword + "*");
+        lsEntryVector = channel.ls(filePath.toString());
+        Stream<ChannelSftp.LsEntry> stream = lsEntryVector.stream();
+        stream.forEach(lsEntry -> {
+            FileModel.FileDataBean file = new FileModel.FileDataBean();
+            SftpATTRS attrs = lsEntry.getAttrs();
+            String fileType;
+            if (attrs.isDir()) fileType = "d";
+            else if (attrs.isLink()) fileType = "l";
+            else fileType = "-";
+            file.setKey(String.valueOf(attrs.hashCode()));
+            file.setType(fileType);
+            file.setName(lsEntry.getFilename());
+
+            file.setSize(getPrintSize(attrs.getSize()));
+            file.setModify_time(attrs.getMtimeString());
+            fileList.add(file);
         });
         fileModel.setFileData(fileList);
         channel.disconnect();
 
         return fileModel;
+    }
+
+    public static String getPrintSize(long size) {
+        if (size < 1024) {
+            return size + "B";
+        } else {
+            size = size / 1024;
+        }
+
+        if (size < 1024) {
+            return size + "KB";
+        } else {
+            size = size / 1024;
+        }
+
+        if (size < 1024) {
+            size = size * 100;
+            return size / 100 + "."
+                    + size % 100 + "MB";
+        } else {
+            size = size * 100 / 1024;
+            return size / 100 + "."
+                    + size % 100 + "GB";
+        }
+    }
+
+    public static void main(String[] args) {
+        HostEntity host = new HostEntity();
+        host.setIpAddress("127.0.0.1");
+        host.setPort("22");
+        host.setUserName("mrheer");
+        host.setPassword("lcy5201314");
+        String path = "/upload";
+        String keyword = "";
+        try {
+            FileModel fileModel = ls(host, path, keyword);
+        } catch (JSchException | SftpException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteFile(HostEntity host, String path, List<String> fileList) throws JSchException, SftpException {
+        ChannelSftp channel = getChannel(host);
+        for (String fileName : fileList) {
+            Path filePath = Paths.get(path, fileName);
+            try {
+                channel.rm(filePath.toString());
+            } catch (SftpException e) {
+                channel.rmdir(filePath.toString());
+            }
+        }
+        channel.disconnect();
+    }
+
+    public static InputStream download(HostEntity host, String path, String fileName) throws JSchException, IOException, SftpException {
+        ChannelSftp channel = getChannel(host);
+        Path filePath = Paths.get(path, fileName);
+        return channel.get(filePath.toString());
     }
 }

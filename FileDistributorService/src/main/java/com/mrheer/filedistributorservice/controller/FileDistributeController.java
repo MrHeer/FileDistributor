@@ -16,7 +16,7 @@ public class FileDistributeController {
     FileDistributeService fileDistributeService;
 
     @RequestMapping(value = "/getTreeData", method = RequestMethod.GET)
-    public TreeModel getTree() {
+    public TreeModel getTreeData() {
         return fileDistributeService.getTreeModel();
     }
 
@@ -25,7 +25,7 @@ public class FileDistributeController {
         return fileDistributeService.upload(file);
     }
 
-    @RequestMapping(value = "distribute", method = RequestMethod.POST)
+    @RequestMapping(value = "/distribute", method = RequestMethod.POST)
     public DistributeStatusModel distribute(@RequestBody DistributeModel distributeModel) {
         return fileDistributeService.distribute(distributeModel);
     }
