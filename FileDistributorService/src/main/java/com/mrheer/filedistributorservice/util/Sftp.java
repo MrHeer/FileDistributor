@@ -39,7 +39,6 @@ public class Sftp {
         return statusModel;
     }
 
-
     public static String distribute(HostEntity host, Map<String, byte[]> fileMap, String path, String type) throws JSchException, SftpException {
         String status = Status.SUCCESS;
         ChannelSftp channel = getChannel(host);
