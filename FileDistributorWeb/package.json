@@ -12,9 +12,9 @@
   "author": "MrHeer",
   "license": "ISC",
   "devDependencies": {
-    "ant-design-pro": "^2.2.1",
+    "react-document-title": "^2.0.3",
+    "react-infinite-scroller": "^1.2.4",
     "umi": "^2.4.4",
-    "umi-plugin-react": "^1.4.2",
-    "react-infinite-scroller": "^1.2.4"
+    "umi-plugin-react": "^1.4.2"
   }
 }

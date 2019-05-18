@@ -12,6 +12,6 @@
 2. gradle build
 
 ## Todo
-[x] add a status for each host after distribute
-[x] add 'retry' feature after distribute exception
-[x] add 'FileManage' module
+- [x] add a status for each host after distribute
+- [x] add 'retry' feature after distribute exception
+- [x] add 'FileManage' module
