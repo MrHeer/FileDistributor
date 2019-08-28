@@ -3,7 +3,6 @@ import {
     Table,
     Select,
     Input,
-    Divider,
     Row, Col,
     Button,
     Icon,
@@ -261,7 +260,7 @@ class FileManage extends Component {
                   <Col span={5}>
                     <Select
                       showSearch
-                      style={{ width: '-webkit-fill-available' }}
+                      style={{ width: '100%' }}
                       placeholder={formatMessage({id: 'chose_host'})}
                       onChange={this.handleSelectChange}
                       filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
