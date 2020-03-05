@@ -8,7 +8,7 @@
     "dev:no-mock": "MOCK=none umi dev",
     "build": "umi build"
   },
-  "keywords": [],
+  "keywords": ["file", "distribute", "react", "antd", "umi"],
   "author": "MrHeer",
   "license": "ISC",
   "devDependencies": {
