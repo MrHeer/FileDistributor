@@ -1,20 +1,41 @@
 import { getFileData, deleteFile } from "@/services/api";
 import { message } from "antd";
-import { formatMessage } from "umi/locale";
+import { formatMessage, Effect, Reducer } from "umi";
+import { File, Status } from "./interface";
 
-export default {
+const defaultState: FileDataModelState = {
+  fileData: [],
+  status: "wait",
+};
+
+export interface FileDataModelState {
+  fileData: File[];
+  status: Status;
+}
+
+interface FileDataModelType {
+  namespace: "fileData";
+  state: FileDataModelState;
+  effects: {
+    fetch: Effect;
+    delete: Effect;
+  };
+  reducers: {
+    fileData: Reducer<FileDataModelState>;
+    deleteFile: Reducer<FileDataModelState>;
+  };
+}
+
+const FileDataModel: FileDataModelType = {
   namespace: "fileData",
-  state: {
-    fileData: [],
-    status: ""
-  },
+  state: defaultState,
 
   effects: {
     *fetch({ payload }, { call, put }) {
       const data = yield call(getFileData, payload);
       yield put({
         type: "fileData",
-        payload: data
+        payload: data,
       });
     },
 
@@ -22,20 +43,21 @@ export default {
       const data = yield call(deleteFile, payload);
       yield put({
         type: "deleteFile",
-        payload: data
+        payload: data,
       });
-    }
+    },
   },
 
   reducers: {
-    fileData(state, { payload: data }) {
+    fileData(state = defaultState, { payload: data }) {
       const { fileData } = data;
       return {
-        fileData: fileData
+        ...state,
+        fileData,
       };
     },
 
-    deleteFile(state, { payload: data }) {
+    deleteFile(state = defaultState, { payload: data }) {
       const { fileData, status } = data;
       if (status === "success") {
         message.success(formatMessage({ id: "delete_success" }));
@@ -43,8 +65,11 @@ export default {
         message.error(formatMessage({ id: "delete_error" }));
       }
       return {
-        fileData: fileData
+        ...state,
+        fileData,
       };
-    }
-  }
+    },
+  },
 };
+
+export default FileDataModel;

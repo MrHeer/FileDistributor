@@ -1,15 +1,35 @@
 import { distribute } from "@/services/api";
 import { message } from "antd";
-import { formatMessage } from "umi";
+import { formatMessage, Effect, Reducer } from "umi";
+import { DistributeHost as Host, ButtonType } from "./interface";
 
-export default {
+const defaultState: DistributeDataModelState = {
+  distributeStatus: "",
+  selectedHost: [],
+  buttonType: "distribute",
+};
+
+export interface DistributeDataModelState {
+  distributeStatus: string;
+  selectedHost: Host[];
+  buttonType: ButtonType;
+}
+
+interface DistributeDataModelType {
+  namespace: "distributeData";
+  state: DistributeDataModelState;
+  effects: {
+    distribute: Effect;
+  };
+  reducers: {
+    distributeData: Reducer<DistributeDataModelState>;
+    updateSelectHost: Reducer<DistributeDataModelState>;
+  };
+}
+
+const DistributeDataModel: DistributeDataModelType = {
   namespace: "distributeData",
-  state: {
-    distributeStatus: {},
-    selectedHost: [],
-    // buttonType: 'distribute', 'retry', 'reset'
-    buttonType: "distribute",
-  },
+  state: defaultState,
 
   effects: {
     *distribute({ payload }, { call, put }) {
@@ -22,9 +42,9 @@ export default {
   },
 
   reducers: {
-    distributeData(state, { payload: data }) {
+    distributeData(_state, { payload: data }): DistributeDataModelState {
       const { distributeStatus, selectedHost } = data;
-      var buttonType;
+      let buttonType: ButtonType = "reset";
       if (distributeStatus === "success") {
         buttonType = "reset";
         message.success(formatMessage({ id: "distribute_success" }));
@@ -33,18 +53,24 @@ export default {
         message.error(formatMessage({ id: "distribute_error" }));
       }
       return {
-        distributeStatus: distributeStatus,
-        selectedHost: selectedHost,
-        buttonType: buttonType,
+        distributeStatus,
+        selectedHost,
+        buttonType,
       };
     },
 
-    updateSelectHost(state, { payload: data }) {
+    updateSelectHost(
+      state = defaultState,
+      { payload: data }
+    ): DistributeDataModelState {
       const { selectedHost } = data;
       return {
-        selectedHost: selectedHost,
+        ...state,
+        selectedHost,
         buttonType: "distribute",
       };
     },
   },
 };
+
+export default DistributeDataModel;

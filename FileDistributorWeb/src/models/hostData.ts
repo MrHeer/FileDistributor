@@ -3,24 +3,51 @@ import {
   addHost,
   deleteHost,
   editHost,
-  testHost
+  testHost,
 } from "@/services/api";
 import { message } from "antd";
-import { formatMessage } from "umi/locale";
+import { formatMessage, Effect, Reducer } from "umi";
+import { Host, Status } from "./interface";
 
-export default {
+const defaultState: HostDataModelState = {
+  hostData: [],
+  status: "wait",
+};
+
+export interface HostDataModelState {
+  hostData: Host[];
+  status: Status;
+}
+
+interface HostDataModelType {
+  namespace: "hostData";
+  state: HostDataModelState;
+  effects: {
+    fetch: Effect;
+    add: Effect;
+    delete: Effect;
+    edit: Effect;
+    test: Effect;
+  };
+  reducers: {
+    hostData: Reducer<HostDataModelState>;
+    addHost: Reducer<HostDataModelState>;
+    deleteHost: Reducer<HostDataModelState>;
+    editHost: Reducer<HostDataModelState>;
+    testHost: Reducer<HostDataModelState>;
+  };
+}
+
+const HostDataModel: HostDataModelType = {
   namespace: "hostData",
-  state: {
-    hostData: [],
-    status: ""
-  },
+  state: defaultState,
 
   effects: {
     *fetch({ payload }, { call, put }) {
       const data = yield call(getHostData, payload);
       yield put({
         type: "hostData",
-        payload: data
+        payload: data,
       });
     },
 
@@ -28,7 +55,7 @@ export default {
       const data = yield call(addHost, payload);
       yield put({
         type: "addHost",
-        payload: data
+        payload: data,
       });
     },
 
@@ -36,7 +63,7 @@ export default {
       const data = yield call(deleteHost, payload);
       yield put({
         type: "deleteHost",
-        payload: data
+        payload: data,
       });
     },
 
@@ -44,7 +71,7 @@ export default {
       const data = yield call(editHost, payload);
       yield put({
         type: "editHost",
-        payload: data
+        payload: data,
       });
     },
 
@@ -52,20 +79,21 @@ export default {
       const data = yield call(testHost, payload);
       yield put({
         type: "testHost",
-        payload: data
+        payload: data,
       });
-    }
+    },
   },
 
   reducers: {
-    hostData(state, { payload: data }) {
+    hostData(state = defaultState, { payload: data }) {
       const { hostData } = data;
       return {
-        hostData: hostData
+        ...state,
+        hostData,
       };
     },
 
-    addHost(state, { payload: data }) {
+    addHost(state = defaultState, { payload: data }) {
       const { hostData, status } = data;
       if (status === "success") {
         message.success(formatMessage({ id: "add_success" }));
@@ -73,11 +101,12 @@ export default {
         message.error(formatMessage({ id: "add_error" }));
       }
       return {
-        hostData: hostData
+        ...state,
+        hostData,
       };
     },
 
-    deleteHost(state, { payload: data }) {
+    deleteHost(state = defaultState, { payload: data }) {
       const { hostData, status } = data;
       if (status === "success") {
         message.success(formatMessage({ id: "delete_success" }));
@@ -85,11 +114,12 @@ export default {
         message.error(formatMessage({ id: "delete_error" }));
       }
       return {
-        hostData: hostData
+        ...state,
+        hostData,
       };
     },
 
-    editHost(state, { payload: data }) {
+    editHost(state = defaultState, { payload: data }) {
       const { hostData, status } = data;
       if (status === "success") {
         message.success(formatMessage({ id: "edit_success" }));
@@ -97,11 +127,12 @@ export default {
         message.error(formatMessage({ id: "edit_error" }));
       }
       return {
-        hostData: hostData
+        ...state,
+        hostData,
       };
     },
 
-    testHost(state, { payload: data }) {
+    testHost(state = defaultState, { payload: data }) {
       const { status } = data;
       if (status === "success") {
         message.success(formatMessage({ id: "test_success" }));
@@ -109,9 +140,11 @@ export default {
         message.error(formatMessage({ id: "test_error" }));
       }
       return {
-        hostData: state.hostData,
-        status: status
+        ...state,
+        status,
       };
-    }
-  }
+    },
+  },
 };
+
+export default HostDataModel;

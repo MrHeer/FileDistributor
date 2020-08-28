@@ -10,7 +10,7 @@ import {
   Input,
   List,
   Radio,
-  Spin
+  Spin,
 } from "antd";
 import InfiniteScroll from "react-infinite-scroller";
 import { FormattedMessage, formatMessage } from "umi/locale";
@@ -18,41 +18,42 @@ import { connect } from "dva";
 
 const { TreeNode } = Tree;
 const RadioGroup = Radio.Group;
+type DistributeType = "safe" | "overwrite";
 
 import Styles from "./FileDistributeStyles.less";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { treeData } = state["treeData"];
   const { selectedHost, buttonType } = state["distributeData"];
   return {
     treeData,
     selectedHost,
     buttonType,
-    loading: state.loading.global
+    loading: state.loading.global,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onQueryTree: () => {
       dispatch({
-        type: "treeData/fetch"
+        type: "treeData/fetch",
       });
     },
 
-    onDistribute: data => {
+    onDistribute: (data) => {
       dispatch({
         type: "distributeData/distribute",
-        payload: data
+        payload: data,
       });
     },
 
-    updateSelectHost: data => {
+    updateSelectHost: (data) => {
       dispatch({
         type: "distributeData/updateSelectHost",
-        payload: data
+        payload: data,
       });
-    }
+    },
   };
 };
 
@@ -65,11 +66,10 @@ class FileDistribute extends Component {
     checkedKeys: [],
     selectedKeys: [],
     remotePath: "",
-    // distribute type: 'safe', 'overwrite'
-    type: "safe"
+    type: "safe",
   };
 
-  handleChange = info => {
+  handleChange = (info) => {
     let fileList = info.fileList;
 
     // 1. Limit the number of uploaded files
@@ -79,18 +79,18 @@ class FileDistribute extends Component {
     this.setState({ fileList });
   };
 
-  onExpand = expandedKeys => {
+  onExpand = (expandedKeys) => {
     // if not set autoExpandParent to false, if children expanded, parent can not collapse.
     // or, you can remove all expanded children keys.
     this.setState({
       expandedKeys,
-      autoExpandParent: false
+      autoExpandParent: false,
     });
   };
 
-  onCheck = checkedKeys => {
+  onCheck = (checkedKeys) => {
     this.setState({
-      checkedKeys
+      checkedKeys,
     });
 
     // logical judgment about only inserting leaf into selectedHost
@@ -108,37 +108,36 @@ class FileDistribute extends Component {
     // get the selectedHost
     for (let host of hostData.values()) {
       if (checkedKeys.includes(host.key)) {
-        // status: 'wait', 'success', 'exist', 'error'
         selectedHost.push({ key: host.key, title: host.title, status: "wait" });
       }
     }
 
     const data = {
-      selectedHost: selectedHost
+      selectedHost: selectedHost,
     };
     this.props.updateSelectHost(data);
   };
 
-  onRadioChange = e => {
+  onRadioChange = (e) => {
     this.setState({
-      type: e.target.value
+      type: e.target.value,
     });
   };
 
   resetSelectedHost = () => {
     const { selectedHost } = this.props;
-    selectedHost.forEach(host => {
+    selectedHost.forEach((host) => {
       host.status = "wait";
     });
     const data = {
-      selectedHost: selectedHost
+      selectedHost: selectedHost,
     };
     this.props.updateSelectHost(data);
   };
 
-  handleRemotePathChange = e => {
+  handleRemotePathChange = (e) => {
     this.setState({
-      remotePath: e.target.value
+      remotePath: e.target.value,
     });
   };
 
@@ -149,7 +148,7 @@ class FileDistribute extends Component {
       fileList,
       selectedHost,
       remotePath,
-      type
+      type,
     };
     this.props.onDistribute(data);
   };
@@ -158,8 +157,8 @@ class FileDistribute extends Component {
     this.props.onQueryTree();
   }
 
-  renderTreeNodes = data =>
-    data.map(item => {
+  renderTreeNodes = (data) =>
+    data.map((item) => {
       if (item.children) {
         return (
           <TreeNode title={item.title} key={item.key} dataRef={item}>
@@ -170,7 +169,7 @@ class FileDistribute extends Component {
       return <TreeNode {...item} />;
     });
 
-  renderList = item => {
+  renderList = (item) => {
     if (item.status === "wait") {
       return (
         <span className={Styles["override-ant-list"]}>
@@ -268,7 +267,7 @@ class FileDistribute extends Component {
     const props = {
       action: "/api/uploadFile",
       onChange: this.handleChange,
-      multiple: true
+      multiple: true,
     };
 
     return (
@@ -282,7 +281,7 @@ class FileDistribute extends Component {
               <div
                 style={{
                   overflow: "auto",
-                  height: 450
+                  height: 450,
                 }}
               >
                 <InfiniteScroll
@@ -307,7 +306,7 @@ class FileDistribute extends Component {
               <div
                 style={{
                   overflow: "auto",
-                  height: 450
+                  height: 450,
                 }}
               >
                 <InfiniteScroll
@@ -344,7 +343,7 @@ class FileDistribute extends Component {
                   <div
                     style={{
                       overflow: "auto",
-                      height: 280
+                      height: 280,
                     }}
                   >
                     <InfiniteScroll
