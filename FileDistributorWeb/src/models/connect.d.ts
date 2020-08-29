@@ -11,7 +11,7 @@ export interface Loading {
   global: boolean;
   effects: { [key: string]: boolean | undefined };
   models: {
-    distribute?: boolean;
+    distributeData?: boolean;
     treeData?: boolean;
     fileData?: boolean;
     hostData?: boolean;
@@ -21,7 +21,7 @@ export interface Loading {
 export interface ConnectState {
   loading: Loading;
   settings: ProSettings;
-  distribute: DistributeDataModelState;
+  distributeData: DistributeDataModelState;
   treeData: TreeDataModelState;
   fileData: FileDataModelState;
   hostData: HostDataModelState;

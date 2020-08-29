@@ -30,5 +30,5 @@ export interface File {
 export interface Tree {
   title: string;
   key: string;
-  children?: Tree;
+  children?: Tree[];
 }

@@ -5,13 +5,13 @@ import { DistributeHost as Host, ButtonType } from "./interface";
 
 const defaultState: DistributeDataModelState = {
   distributeStatus: "",
-  selectedHost: [],
+  selectedHosts: [],
   buttonType: "distribute",
 };
 
 export interface DistributeDataModelState {
   distributeStatus: string;
-  selectedHost: Host[];
+  selectedHosts: Host[];
   buttonType: ButtonType;
 }
 
@@ -43,7 +43,7 @@ const DistributeDataModel: DistributeDataModelType = {
 
   reducers: {
     distributeData(_state, { payload: data }): DistributeDataModelState {
-      const { distributeStatus, selectedHost } = data;
+      const { distributeStatus, selectedHosts } = data;
       let buttonType: ButtonType = "reset";
       if (distributeStatus === "success") {
         buttonType = "reset";
@@ -54,7 +54,7 @@ const DistributeDataModel: DistributeDataModelType = {
       }
       return {
         distributeStatus,
-        selectedHost,
+        selectedHosts,
         buttonType,
       };
     },
@@ -63,10 +63,10 @@ const DistributeDataModel: DistributeDataModelType = {
       state = defaultState,
       { payload: data }
     ): DistributeDataModelState {
-      const { selectedHost } = data;
+      const { selectedHosts } = data;
       return {
         ...state,
-        selectedHost,
+        selectedHosts,
         buttonType: "distribute",
       };
     },
