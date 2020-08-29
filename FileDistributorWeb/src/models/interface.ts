@@ -21,7 +21,7 @@ export interface File {
   permissions: string;
   numbers: string;
   user: string;
-  group: string;
+  groupName: string;
   size: string;
   modifyTime: string;
   name: string;

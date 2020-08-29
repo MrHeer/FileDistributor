@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { SFC, useEffect, useState, ReactText } from "react";
 import {
   Table,
   Select,
@@ -6,97 +6,212 @@ import {
   Row,
   Col,
   Button,
-  Icon,
   Popconfirm,
   Modal,
   Spin,
-  message
+  message,
 } from "antd";
-import { FormattedMessage, formatMessage } from "umi/locale";
-import { connect } from "dva";
+import {
+  FormattedMessage,
+  formatMessage,
+  connect,
+  ConnectProps,
+  Dispatch,
+} from "umi";
 import { stringify } from "qs";
+import { File as FileModel, Host as HostModel } from "@/models/interface";
+import { ConnectState } from "@/models/connect";
+import { TableProps, ColumnsType } from "antd/lib/table/Table";
+import {
+  FileOutlined,
+  FolderOutlined,
+  FileUnknownFilled,
+  FileUnknownOutlined,
+} from "@ant-design/icons";
 
 const Option = Select.Option;
 const { confirm } = Modal;
 
-const mapStateToProps = state => {
-  const { fileData } = state["fileData"];
-  const { hostData } = state["hostData"];
-  return {
-    fileData,
-    hostData,
-    loading: state.loading.global
-  };
-};
+interface FileManageProps extends ConnectProps {
+  fileData: FileModel[];
+  hostData: HostModel[];
+  loading?: boolean;
+  dispatch: Dispatch;
+}
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onQueryHost: () => {
-      dispatch({
-        type: "hostData/fetch"
-      });
-    },
+const FileManage: SFC<FileManageProps> = (props) => {
+  const { fileData, hostData, loading = true, dispatch } = props;
 
-    onQueryFile: data => {
-      dispatch({
-        type: "fileData/fetch",
-        payload: data
-      });
-    },
+  const [selectedFileKeys, setSelectedFileKeys] = useState<ReactText[]>([]);
+  const [hostID, setHostID] = useState("");
+  const [remotePath, setRemotePath] = useState("");
+  const [keyword, setKeyword] = useState("");
 
-    onDeleteFile: data => {
-      dispatch({
-        type: "fileData/delete",
-        payload: data
-      });
-    }
-  };
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
-class FileManage extends Component {
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    const selectedFiles = [];
-    selectedRows.forEach(row => selectedFiles.push(row.name));
-    this.setState({
-      selectedFiles: selectedFiles
+  const onQueryHost = () => {
+    dispatch({
+      type: "hostData/fetch",
     });
   };
 
-  onShowSizeChange = (current, pageSize) => {};
+  const onQueryFile = (data: {
+    hostID: string;
+    remotePath: string;
+    keyword: string;
+  }) => {
+    dispatch({
+      type: "fileData/fetch",
+      payload: data,
+    });
+  };
 
-  onPageChange = pageNumber => {};
+  const onDeleteFile = (data: {
+    hostID: string;
+    remotePath: string;
+    keyword: string;
+    files: ReactText[];
+  }) => {
+    dispatch({
+      type: "fileData/delete",
+      payload: data,
+    });
+  };
 
-  state = {
-    hostID: "",
-    remotePath: "",
-    keyword: "",
-    selectedFiles: [],
-    pagination: {
-      showQuickJumper: true,
-      showSizeChanger: true,
-      onShowSizeChange: this.onShowSizeChange,
-      pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
-      onChange: this.onPageChange,
-      showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`
-    },
-    rowSelection: {
-      onChange: this.onSelectChange
+  const onSelectChange = (selectedRowKeys: React.ReactText[]) => {
+    setSelectedFileKeys(selectedRowKeys);
+  };
+
+  const onShowSizeChange = (current: number, pageSize: number) => {};
+
+  // query file data
+  const handleQuery = () => {
+    const data = {
+      hostID: hostID,
+      remotePath: remotePath,
+      keyword: keyword,
+    };
+    onQueryFile(data);
+  };
+
+  const handleSelectChange = (value: string) => {
+    setHostID(value);
+  };
+
+  const handleRemotePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setRemotePath(e.target.value);
+  };
+
+  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
+  };
+
+  const handleChangePath = (record: FileModel) => {
+    var newPath = `${remotePath}/${record.name}`;
+    newPath = newPath.replace("//", "/");
+    const data = {
+      hostID: hostID,
+      remotePath: newPath,
+      keyword: keyword,
+    };
+    onQueryFile(data);
+    setRemotePath(newPath);
+  };
+
+  // delete you selected rows
+  const onClickDelete = () => {
+    const data = {
+      hostID,
+      remotePath,
+      keyword,
+      files: selectedFileKeys,
+    };
+    if (data.files.length > 0) {
+      confirm({
+        title: formatMessage({ id: "file_confirm_title" }),
+        content: formatMessage({ id: "total" }) + data.files.length,
+        okText: formatMessage({ id: "yes" }),
+        okType: "danger",
+        cancelText: formatMessage({ id: "no" }),
+        onOk: () => onDeleteFile(data),
+      });
+    } else {
+      message.error(formatMessage({ id: "no_checked" }));
     }
   };
 
-  columns = [
+  // delete one row
+  const handleDelete = (record: FileModel) => {
+    const data = {
+      hostID,
+      keyword,
+      remotePath,
+      files: [record.name],
+    };
+    onDeleteFile(data);
+  };
+
+  const onBackKeyDown = (e: any) => {
+    if (e.target.localName === "input") {
+      return;
+    }
+    switch (e.keyCode) {
+      // Backspace
+      case 8:
+        onClickBack();
+        break;
+    }
+  };
+
+  const onClickBack = () => {
+    let newPaths = remotePath.split("/");
+    newPaths.pop();
+    let newPath = newPaths.join("/");
+    newPath = newPath.replace("//", "/");
+    const data = {
+      hostID: hostID,
+      remotePath: newPath,
+      keyword: keyword,
+    };
+    onQueryFile(data);
+    setRemotePath(newPath);
+  };
+
+  useEffect(() => {
+    onQueryHost();
+    document.addEventListener("keyup", onBackKeyDown, true);
+    return () => {
+      document.removeEventListener("keyup", onBackKeyDown, true);
+    };
+  });
+
+  const onPageChange = (pageNumber: number) => {};
+
+  const fileListProps: TableProps<FillMode> = {
+    pagination: {
+      showQuickJumper: true,
+      showSizeChanger: true,
+      onShowSizeChange: onShowSizeChange,
+      pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
+      onChange: onPageChange,
+      showTotal: (total: number, range: [number, number]) =>
+        `${range[0]}-${range[1]}, ${total}`,
+    },
+    rowSelection: {
+      onChange: onSelectChange,
+    },
+  };
+
+  const columns: ColumnsType<FileModel> = [
     {
       title: formatMessage({ id: "file_name" }),
       key: "name",
-      sorter: (a, b) => (a.group_name > b.group_name ? 1 : -1),
+      sorter: (a, b) => (a.groupName > b.groupName ? 1 : -1),
       width: 450,
-      render: (text, record) => {
-        const { hostID, remotePath } = this.state;
+      render: (_text, record) => {
         const params = {
           hostID: hostID,
           remotePath: remotePath,
-          fileName: record.name
+          fileName: record.name,
         };
         if (record.type === "-") {
           return (
@@ -104,14 +219,14 @@ class FileManage extends Component {
               href={`/api/download?${stringify(params)}`}
               download={record.name}
             >
-              <Icon type="file" style={{ marginRight: "1em" }} />
+              <FileOutlined style={{ marginRight: "1em" }} />
               {record.name}
             </a>
           );
         } else if (record.type === "d") {
           return (
-            <a onClick={() => this.handleChangePath(record)}>
-              <Icon type="folder" style={{ marginRight: "1em" }} />
+            <a onClick={() => handleChangePath(record)}>
+              <FolderOutlined style={{ marginRight: "1em" }} />
               {record.name}
             </a>
           );
@@ -121,233 +236,122 @@ class FileManage extends Component {
               href={`/api/download?${stringify(params)}`}
               download={record.name}
             >
-              <Icon type="file-unknown" style={{ marginRight: "1em" }} />
+              <FileUnknownOutlined style={{ marginRight: "1em" }} />
               {record.name}
             </a>
           );
         }
-      }
+      },
     },
     {
       title: formatMessage({ id: "file_size" }),
-      dataIndex: "size",
       key: "size",
-      width: 250
+      width: 250,
     },
     {
       title: formatMessage({ id: "modify_time" }),
-      dataIndex: "modify_time",
-      key: "modify_time",
-      width: 400
+      key: "modifyTime",
+      width: 400,
     },
     {
       title: formatMessage({ id: "action" }),
       key: "action",
       width: 160,
-      render: (text, record) => (
+      render: (_text, record) => (
         <span>
           <Popconfirm
             title={formatMessage({ id: "pop_confirm_title" })}
-            onConfirm={() => this.handleDelete(record)}
+            onConfirm={() => handleDelete(record)}
           >
             <a>
               <FormattedMessage id="delete" />
             </a>
           </Popconfirm>
         </span>
-      )
-    }
+      ),
+    },
   ];
 
-  // query file data
-  handleQuery = () => {
-    const { hostID, remotePath, keyword } = this.state;
-    const data = {
-      hostID: hostID,
-      remotePath: remotePath,
-      keyword: keyword
-    };
-    this.props.onQueryFile(data);
-  };
+  return (
+    <div>
+      <Spin spinning={this.props.loading}>
+        <Row gutter={10} style={{ margin: 20 }}>
+          <Col span={5}>
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder={formatMessage({ id: "chose_host" })}
+              onChange={this.handleSelectChange}
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {this.props.hostData.map((host) => (
+                <Option key={host.key}>{host.host_name}</Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={5}>
+            <Input
+              value={this.state.remotePath}
+              onChange={this.handleRemotePathChange}
+              placeholder={formatMessage({ id: "remote_path" })}
+              allowClear
+            />
+          </Col>
+          <Col span={5}>
+            <Input
+              onChange={this.handleKeywordChange}
+              placeholder={formatMessage({ id: "keyword" })}
+              allowClear
+            />
+          </Col>
+          <Col span={2}>
+            <Button onClick={this.handleQuery}>
+              <Icon type="reload" />
+              <FormattedMessage id="reload" />
+            </Button>
+          </Col>
+        </Row>
+        <Row gutter={10} style={{ margin: 20 }}>
+          <Col span={2}>
+            <Button onClick={this.onClickBack}>
+              <Icon type="rollback" />
+              <FormattedMessage id="back" />
+            </Button>
+          </Col>
+          <Col span={2}>
+            <Button onClick={this.onClickDelete} type="danger">
+              <Icon type="minus-circle" />
+              <FormattedMessage id="delete" />
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              {...fileListProps}
+              style={{ minHeight: 520 }}
+              columns={columns}
+              dataSource={fileData}
+            />
+          </Col>
+        </Row>
+      </Spin>
+    </div>
+  );
+};
 
-  handleSelectChange = value => {
-    this.setState({
-      hostID: value
-    });
-  };
-
-  handleRemotePathChange = e => {
-    e.preventDefault();
-    this.setState({
-      remotePath: e.target.value
-    });
-  };
-
-  handleKeywordChange = e => {
-    this.setState({
-      keyword: e.target.value
-    });
-  };
-
-  handleChangePath = record => {
-    const { hostID, remotePath, keyword } = this.state;
-    var newPath = `${remotePath}/${record.name}`;
-    newPath = newPath.replace("//", "/");
-    const data = {
-      hostID: hostID,
-      remotePath: newPath,
-      keyword: keyword
-    };
-    this.props.onQueryFile(data);
-    this.setState({
-      remotePath: newPath
-    });
-  };
-
-  // delete you selected rows
-  onClickDelete = () => {
-    const data = {
-      hostID: this.state.hostID,
-      remotePath: this.state.remotePath,
-      keyword: this.state.keyword,
-      files: this.state.selectedFiles
-    };
-    if (data.files.length > 0) {
-      const onDeleteFile = this.props.onDeleteFile;
-      confirm({
-        title: formatMessage({ id: "file_confirm_title" }),
-        content: formatMessage({ id: "total" }) + data.files.length,
-        okText: formatMessage({ id: "yes" }),
-        okType: "danger",
-        cancelText: formatMessage({ id: "no" }),
-        onOk: () => onDeleteFile(data)
-      });
-    } else {
-      message.error(formatMessage({ id: "no_checked" }));
-    }
-  };
-
-  // delete one row
-  handleDelete = record => {
-    const data = {
-      hostID: this.state.hostID,
-      keyword: this.state.keyword,
-      remotePath: this.state.remotePath,
-      files: [record.name]
-    };
-    this.props.onDeleteFile(data);
-  };
-
-  onBackKeyDown = e => {
-    if (e.target.localName == "input") {
-      return;
-    }
-    switch (e.keyCode) {
-      // Backspace
-      case 8:
-        this.onClickBack();
-        break;
-    }
-  };
-
-  onClickBack = () => {
-    const { hostID, remotePath, keyword } = this.state;
-    var newPath = remotePath.split("/");
-    newPath.pop();
-    newPath = newPath.join("/");
-    newPath = newPath.replace("//", "/");
-    const data = {
-      hostID: hostID,
-      remotePath: newPath,
-      keyword: keyword
-    };
-    this.props.onQueryFile(data);
-    this.setState({
-      remotePath: newPath
-    });
-  };
-
-  componentDidMount() {
-    this.props.onQueryHost();
-    document.addEventListener("keyup", this.onBackKeyDown, true);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener("keyup", this.onBackKeyDown, true);
-  }
-
-  render() {
-    return (
-      <div>
-        <Spin spinning={this.props.loading}>
-          <Row gutter={10} style={{ margin: 20 }}>
-            <Col span={5}>
-              <Select
-                showSearch
-                style={{ width: "100%" }}
-                placeholder={formatMessage({ id: "chose_host" })}
-                onChange={this.handleSelectChange}
-                filterOption={(input, option) =>
-                  option.props.children
-                    .toLowerCase()
-                    .indexOf(input.toLowerCase()) >= 0
-                }
-              >
-                {this.props.hostData.map(host => (
-                  <Option key={host.key}>{host.host_name}</Option>
-                ))}
-              </Select>
-            </Col>
-            <Col span={5}>
-              <Input
-                value={this.state.remotePath}
-                onChange={this.handleRemotePathChange}
-                placeholder={formatMessage({ id: "remote_path" })}
-                allowClear
-              />
-            </Col>
-            <Col span={5}>
-              <Input
-                onChange={this.handleKeywordChange}
-                placeholder={formatMessage({ id: "keyword" })}
-                allowClear
-              />
-            </Col>
-            <Col span={2}>
-              <Button onClick={this.handleQuery}>
-                <Icon type="reload" />
-                <FormattedMessage id="reload" />
-              </Button>
-            </Col>
-          </Row>
-          <Row gutter={10} style={{ margin: 20 }}>
-            <Col span={2}>
-              <Button onClick={this.onClickBack}>
-                <Icon type="rollback" />
-                <FormattedMessage id="back" />
-              </Button>
-            </Col>
-            <Col span={2}>
-              <Button onClick={this.onClickDelete} type="danger">
-                <Icon type="minus-circle" />
-                <FormattedMessage id="delete" />
-              </Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Table
-                {...this.state}
-                style={{ minHeight: 520 }}
-                columns={this.columns}
-                dataSource={this.props.fileData}
-              />
-            </Col>
-          </Row>
-        </Spin>
-      </div>
-    );
-  }
-}
-
-export default FileManage;
+export default connect(
+  ({
+    treeData: { treeData },
+    fileData: { fileData },
+    loading: { models },
+  }: ConnectState) => ({
+    fileData,
+    treeData,
+    loading: models.fileData,
+  })
+)(FileManage);
