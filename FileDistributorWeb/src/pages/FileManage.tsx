@@ -25,8 +25,10 @@ import { TableProps, ColumnsType } from "antd/lib/table/Table";
 import {
   FileOutlined,
   FolderOutlined,
-  FileUnknownFilled,
   FileUnknownOutlined,
+  ReloadOutlined,
+  MinusCircleOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
 
 const Option = Select.Option;
@@ -150,8 +152,8 @@ const FileManage: SFC<FileManageProps> = (props) => {
     onDeleteFile(data);
   };
 
-  const onBackKeyDown = (e: any) => {
-    if (e.target.localName === "input") {
+  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.currentTarget.localName === "input") {
       return;
     }
     switch (e.keyCode) {
@@ -178,15 +180,11 @@ const FileManage: SFC<FileManageProps> = (props) => {
 
   useEffect(() => {
     onQueryHost();
-    document.addEventListener("keyup", onBackKeyDown, true);
-    return () => {
-      document.removeEventListener("keyup", onBackKeyDown, true);
-    };
   });
 
   const onPageChange = (pageNumber: number) => {};
 
-  const fileListProps: TableProps<FillMode> = {
+  const fileListProps: TableProps<FileModel> = {
     pagination: {
       showQuickJumper: true,
       showSizeChanger: true,
@@ -273,65 +271,65 @@ const FileManage: SFC<FileManageProps> = (props) => {
   ];
 
   return (
-    <div>
-      <Spin spinning={this.props.loading}>
+    <div onKeyPress={onKeyPress}>
+      <Spin spinning={loading}>
         <Row gutter={10} style={{ margin: 20 }}>
           <Col span={5}>
             <Select
               showSearch
               style={{ width: "100%" }}
               placeholder={formatMessage({ id: "chose_host" })}
-              onChange={this.handleSelectChange}
+              onChange={handleSelectChange}
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {this.props.hostData.map((host) => (
-                <Option key={host.key}>{host.host_name}</Option>
+              {hostData.map((host) => (
+                <Option key={host.key} value={host.key}>
+                  {host.hostName}
+                </Option>
               ))}
             </Select>
           </Col>
           <Col span={5}>
             <Input
-              value={this.state.remotePath}
-              onChange={this.handleRemotePathChange}
+              value={remotePath}
+              onChange={handleRemotePathChange}
               placeholder={formatMessage({ id: "remote_path" })}
               allowClear
             />
           </Col>
           <Col span={5}>
             <Input
-              onChange={this.handleKeywordChange}
+              onChange={handleKeywordChange}
               placeholder={formatMessage({ id: "keyword" })}
               allowClear
             />
           </Col>
           <Col span={2}>
-            <Button onClick={this.handleQuery}>
-              <Icon type="reload" />
+            <Button onClick={handleQuery}>
+              <ReloadOutlined />
               <FormattedMessage id="reload" />
             </Button>
           </Col>
         </Row>
         <Row gutter={10} style={{ margin: 20 }}>
           <Col span={2}>
-            <Button onClick={this.onClickBack}>
-              <Icon type="rollback" />
+            <Button onClick={onClickBack}>
+              <RollbackOutlined />
               <FormattedMessage id="back" />
             </Button>
           </Col>
           <Col span={2}>
-            <Button onClick={this.onClickDelete} type="danger">
-              <Icon type="minus-circle" />
+            <Button onClick={onClickDelete} type="primary" danger>
+              <MinusCircleOutlined />
               <FormattedMessage id="delete" />
             </Button>
           </Col>
         </Row>
         <Row>
           <Col>
-            <Table
+            <Table<FileModel>
               {...fileListProps}
               style={{ minHeight: 520 }}
               columns={columns}
