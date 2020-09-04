@@ -203,10 +203,6 @@ const HostManage: FC<HostManageProps> = (props) => {
     password: "",
   });
 
-  useEffect(() => {
-    onQueryHost;
-  }, []);
-
   const onQueryHost = () => {
     dispatch({
       type: "hostData/fetch",
@@ -258,21 +254,21 @@ const HostManage: FC<HostManageProps> = (props) => {
   const columns: ColumnsType<HostModel> = [
     {
       title: formatMessage({ id: "group_name" }),
-      dataIndex: "group_name",
-      key: "group_name",
+      key: "groupName",
+      dataIndex: "groupName",
       sorter: (a, b) => (a.groupName > b.groupName ? 1 : -1),
       width: 350,
     },
     {
       title: formatMessage({ id: "host_name" }),
-      dataIndex: "host_name",
-      key: "host_name",
+      key: "hostName",
+      dataIndex: "hostName",
       width: 350,
     },
     {
       title: formatMessage({ id: "ip_address" }),
-      dataIndex: "ip_address",
-      key: "ip_address",
+      key: "ipAddress",
+      dataIndex: "ipAddress",
       width: 400,
     },
     {
@@ -297,6 +293,10 @@ const HostManage: FC<HostManageProps> = (props) => {
       ),
     },
   ];
+
+  useEffect(() => {
+    onQueryHost();
+  }, []);
 
   const onClickAdd = () => {
     const data = {
@@ -370,52 +370,46 @@ const HostManage: FC<HostManageProps> = (props) => {
   };
 
   return (
-    <div>
-      <Spin spinning={loading}>
-        <Row style={{ margin: 20 }}>
-          <Col span={2}>
-            <Button onClick={onClickAdd}>
-              <PlusCircleOutlined />
-              <FormattedMessage id="add" />
-            </Button>
-            <ModalForm
-              title={modalTitle}
-              visible={visible}
-              formData={formData}
-              onOk={handleOk}
-              onTest={handleTest}
-              onCancel={handleCancel}
-            ></ModalForm>
-          </Col>
-          <Col span={2}>
-            <Button
-              onClick={onClickDelete}
-              type="primary"
-              danger
-              icon={<MinusCircleOutlined />}
-            >
-              <FormattedMessage id="delete" />
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Table
-              {...tableProps}
-              style={{ minHeight: 520 }}
-              columns={columns}
-              dataSource={hostData}
-            />
-          </Col>
-        </Row>
-      </Spin>
-    </div>
+    <Spin spinning={loading}>
+      <Row style={{ margin: 20 }}>
+        <Col span={2}>
+          <Button onClick={onClickAdd}>
+            <PlusCircleOutlined />
+            <FormattedMessage id="add" />
+          </Button>
+          <ModalForm
+            title={modalTitle}
+            visible={visible}
+            formData={formData}
+            onOk={handleOk}
+            onTest={handleTest}
+            onCancel={handleCancel}
+          ></ModalForm>
+        </Col>
+        <Col span={2}>
+          <Button onClick={onClickDelete} type="primary" danger>
+            <MinusCircleOutlined />
+            <FormattedMessage id="delete" />
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table
+            {...tableProps}
+            style={{ minHeight: 520 }}
+            columns={columns}
+            dataSource={hostData}
+          />
+        </Col>
+      </Row>
+    </Spin>
   );
 };
 
 export default connect(
-  ({ treeData: { treeData }, loading: { global } }: ConnectState) => ({
-    treeData,
+  ({ hostData: { hostData }, loading: { global } }: ConnectState) => ({
+    hostData,
     loading: global,
   })
 )(HostManage);

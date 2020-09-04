@@ -150,18 +150,6 @@ const FileManage: SFC<FileManageProps> = (props) => {
     onDeleteFile(data);
   };
 
-  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.currentTarget.localName === "input") {
-      return;
-    }
-    switch (e.keyCode) {
-      // Backspace
-      case 8:
-        onClickBack();
-        break;
-    }
-  };
-
   const onClickBack = () => {
     let newPaths = remotePath.split("/");
     newPaths.pop();
@@ -180,14 +168,11 @@ const FileManage: SFC<FileManageProps> = (props) => {
     onQueryHost();
   }, []);
 
-  const onPageChange = (pageNumber: number) => {};
-
   const fileListProps: TableProps<FileModel> = {
     pagination: {
       showQuickJumper: true,
       showSizeChanger: true,
       pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
-      onChange: onPageChange,
       showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`,
     },
     rowSelection: {
@@ -240,11 +225,13 @@ const FileManage: SFC<FileManageProps> = (props) => {
     {
       title: formatMessage({ id: "file_size" }),
       key: "size",
+      dataIndex: "size",
       width: 250,
     },
     {
       title: formatMessage({ id: "modify_time" }),
       key: "modifyTime",
+      dataIndex: "modifyTime",
       width: 400,
     },
     {
@@ -267,74 +254,72 @@ const FileManage: SFC<FileManageProps> = (props) => {
   ];
 
   return (
-    <div onKeyPress={onKeyPress}>
-      <Spin spinning={loading}>
-        <Row gutter={10} style={{ margin: 20 }}>
-          <Col span={5}>
-            <Select
-              showSearch
-              style={{ width: "100%" }}
-              placeholder={formatMessage({ id: "chose_host" })}
-              onChange={handleSelectChange}
-              filterOption={(input, option) =>
-                option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {hostData.map((host) => (
-                <Option key={host.key} value={host.key}>
-                  {host.hostName}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={5}>
-            <Input
-              value={remotePath}
-              onChange={handleRemotePathChange}
-              placeholder={formatMessage({ id: "remote_path" })}
-              allowClear
-            />
-          </Col>
-          <Col span={5}>
-            <Input
-              onChange={handleKeywordChange}
-              placeholder={formatMessage({ id: "keyword" })}
-              allowClear
-            />
-          </Col>
-          <Col span={2}>
-            <Button onClick={handleQuery}>
-              <ReloadOutlined />
-              <FormattedMessage id="reload" />
-            </Button>
-          </Col>
-        </Row>
-        <Row gutter={10} style={{ margin: 20 }}>
-          <Col span={2}>
-            <Button onClick={onClickBack}>
-              <RollbackOutlined />
-              <FormattedMessage id="back" />
-            </Button>
-          </Col>
-          <Col span={2}>
-            <Button onClick={onClickDelete} type="primary" danger>
-              <MinusCircleOutlined />
-              <FormattedMessage id="delete" />
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Table<FileModel>
-              {...fileListProps}
-              style={{ minHeight: 520 }}
-              columns={columns}
-              dataSource={fileData}
-            />
-          </Col>
-        </Row>
-      </Spin>
-    </div>
+    <Spin spinning={loading}>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col span={5}>
+          <Select
+            showSearch
+            style={{ width: "100%" }}
+            placeholder={formatMessage({ id: "chose_host" })}
+            onChange={handleSelectChange}
+            filterOption={(input, option) =>
+              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {hostData.map((host) => (
+              <Option key={host.key} value={host.key}>
+                {host.hostName}
+              </Option>
+            ))}
+          </Select>
+        </Col>
+        <Col span={5}>
+          <Input
+            value={remotePath}
+            onChange={handleRemotePathChange}
+            placeholder={formatMessage({ id: "remote_path" })}
+            allowClear
+          />
+        </Col>
+        <Col span={5}>
+          <Input
+            onChange={handleKeywordChange}
+            placeholder={formatMessage({ id: "keyword" })}
+            allowClear
+          />
+        </Col>
+        <Col span={2}>
+          <Button onClick={handleQuery}>
+            <ReloadOutlined />
+            <FormattedMessage id="reload" />
+          </Button>
+        </Col>
+      </Row>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col span={2}>
+          <Button onClick={onClickBack}>
+            <RollbackOutlined />
+            <FormattedMessage id="back" />
+          </Button>
+        </Col>
+        <Col span={2}>
+          <Button onClick={onClickDelete} type="primary" danger>
+            <MinusCircleOutlined />
+            <FormattedMessage id="delete" />
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Table<FileModel>
+            {...fileListProps}
+            style={{ minHeight: 520 }}
+            columns={columns}
+            dataSource={fileData}
+          />
+        </Col>
+      </Row>
+    </Spin>
   );
 };
 

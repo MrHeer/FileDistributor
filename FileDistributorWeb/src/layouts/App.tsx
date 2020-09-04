@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { ConfigProvider } from "antd";
 import { getLocale } from "umi";
 import BasicLayout from "./BasicLayout";
@@ -6,21 +6,20 @@ import BasicLayout from "./BasicLayout";
 import zhCN from "antd/lib/locale-provider/zh_CN";
 import enUS from "antd/lib/locale-provider/en_US";
 
-class App extends Component {
-  render() {
-    var antdLocale;
+const App: FC = (props) => {
+  const antdLocale = useMemo(() => {
     if (getLocale() === "zh-CN") {
-      antdLocale = zhCN;
+      return zhCN;
     } else {
-      antdLocale = enUS;
+      return enUS;
     }
+  }, []);
 
-    return (
-      <ConfigProvider locale={antdLocale}>
-        <BasicLayout>{this.props.children}</BasicLayout>
-      </ConfigProvider>
-    );
-  }
-}
+  return (
+    <ConfigProvider locale={antdLocale}>
+      <BasicLayout>{props.children}</BasicLayout>
+    </ConfigProvider>
+  );
+};
 
 export default App;

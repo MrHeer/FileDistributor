@@ -251,8 +251,8 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
   };
 
   return (
-    <Row gutter={5}>
-      <Spin spinning={loading}>
+    <Spin spinning={loading}>
+      <Row gutter={5}>
         <Col span={8}>
           <Card
             className={Styles.card}
@@ -261,7 +261,6 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
             <div
               style={{
                 overflow: "auto",
-                height: 450,
               }}
             >
               <InfiniteScroll
@@ -287,7 +286,6 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
             <div
               style={{
                 overflow: "auto",
-                height: 450,
               }}
             >
               <InfiniteScroll
@@ -322,7 +320,6 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
                 <div
                   style={{
                     overflow: "auto",
-                    height: 280,
                   }}
                 >
                   <InfiniteScroll
@@ -339,7 +336,7 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
                 </div>
               </Col>
             </Row>
-            <Row style={{ marginTop: 20, marginBottom: 20 }}>
+            <Row justify="center" style={{ marginTop: 20, marginBottom: 20 }}>
               <Col>
                 <Input
                   allowClear
@@ -365,8 +362,8 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
             </Row>
           </Card>
         </Col>
-      </Spin>
-    </Row>
+      </Row>
+    </Spin>
   );
 };
 

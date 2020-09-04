@@ -37,7 +37,7 @@ const BasicLayout: FC = (props) => {
   });
 
   return (
-    <Layout>
+    <Layout style={{ height: "100vh" }}>
       <DocumentTitle title={formatMessage({ id: "project_name" })} />
       <Header style={{ background: "#fff" }}>
         <Row>
@@ -94,7 +94,7 @@ const BasicLayout: FC = (props) => {
         </div>
       </Content>
       <Footer style={{ textAlign: "center" }}>
-        File distribution platform ©2019 Created by MrHeer
+        File distribution platform ©2020 Created by MrHeer
       </Footer>
     </Layout>
   );
