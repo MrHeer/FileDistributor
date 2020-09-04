@@ -42,7 +42,7 @@ interface FileManageProps extends ConnectProps {
 }
 
 const FileManage: SFC<FileManageProps> = (props) => {
-  const { fileData, hostData, loading = true, dispatch } = props;
+  const { fileData, hostData = [], loading = true, dispatch } = props;
 
   const [selectedFileKeys, setSelectedFileKeys] = useState<ReactText[]>([]);
   const [hostID, setHostID] = useState("");
@@ -81,8 +81,6 @@ const FileManage: SFC<FileManageProps> = (props) => {
   const onSelectChange = (selectedRowKeys: React.ReactText[]) => {
     setSelectedFileKeys(selectedRowKeys);
   };
-
-  const onShowSizeChange = (current: number, pageSize: number) => {};
 
   // query file data
   const handleQuery = () => {
@@ -180,7 +178,7 @@ const FileManage: SFC<FileManageProps> = (props) => {
 
   useEffect(() => {
     onQueryHost();
-  });
+  }, []);
 
   const onPageChange = (pageNumber: number) => {};
 
@@ -188,7 +186,6 @@ const FileManage: SFC<FileManageProps> = (props) => {
     pagination: {
       showQuickJumper: true,
       showSizeChanger: true,
-      onShowSizeChange: onShowSizeChange,
       pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
       onChange: onPageChange,
       showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`,
@@ -343,12 +340,12 @@ const FileManage: SFC<FileManageProps> = (props) => {
 
 export default connect(
   ({
-    treeData: { treeData },
+    hostData: { hostData },
     fileData: { fileData },
-    loading: { models },
+    loading: { global },
   }: ConnectState) => ({
     fileData,
-    treeData,
-    loading: models.fileData,
+    hostData,
+    loading: global,
   })
 )(FileManage);

@@ -5,6 +5,8 @@ for (let i = 1; i <= 6; i++) {
     groupName: "Group1",
     hostName: `Host${i}`,
     ipAddress: `10.34.45.${i}`,
+    port: "22",
+    userName: "MrHeer",
   });
 }
 
@@ -14,6 +16,8 @@ for (let i = 7; i <= 12; i++) {
     groupName: "Group2",
     hostName: `Host${i}`,
     ipAddress: `10.34.46.${i}`,
+    port: "22",
+    userName: "Xiao Ming",
   });
 }
 

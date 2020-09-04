@@ -162,19 +162,7 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
 
   useEffect(() => {
     onQueryTree();
-  });
-
-  const renderTreeNodes = (data: TreeModel[]) =>
-    data.map((item) => {
-      if (item.children) {
-        return (
-          <TreeNode title={item.title} key={item.key}>
-            {renderTreeNodes(item.children)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode {...item} />;
-    });
+  }, []);
 
   const renderList = (item: DistributeHost) => {
     if (item.status === "wait") {
@@ -315,9 +303,8 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
                   autoExpandParent={autoExpandParent}
                   onCheck={onCheck}
                   checkedKeys={checkedKeys}
-                >
-                  {renderTreeNodes(treeData)}
-                </Tree>
+                  treeData={treeData}
+                />
               </InfiniteScroll>
             </div>
           </Card>
@@ -387,11 +374,11 @@ export default connect(
   ({
     treeData: { treeData },
     distributeData: { selectedHosts, buttonType },
-    loading: { models },
+    loading: { global },
   }: ConnectState) => ({
     treeData,
     selectedHosts,
     buttonType,
-    loading: models.distributeData,
+    loading: global,
   })
 )(FileDistribute);

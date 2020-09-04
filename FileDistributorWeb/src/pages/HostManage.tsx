@@ -15,7 +15,7 @@ import {
 import { FormattedMessage, formatMessage, ConnectProps, Dispatch } from "umi";
 import { connect } from "dva";
 import React from "react";
-import Icon, { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { Host as HostModel } from "@/models/interface";
 import { ConnectState } from "@/models/connect";
 import { TableProps, ColumnsType } from "antd/lib/table/Table";
@@ -205,7 +205,7 @@ const HostManage: FC<HostManageProps> = (props) => {
 
   useEffect(() => {
     onQueryHost;
-  });
+  }, []);
 
   const onQueryHost = () => {
     dispatch({
@@ -388,8 +388,12 @@ const HostManage: FC<HostManageProps> = (props) => {
             ></ModalForm>
           </Col>
           <Col span={2}>
-            <Button onClick={onClickDelete} type="primary" danger>
-              <Icon type="minus-circle" />
+            <Button
+              onClick={onClickDelete}
+              type="primary"
+              danger
+              icon={<MinusCircleOutlined />}
+            >
               <FormattedMessage id="delete" />
             </Button>
           </Col>
@@ -410,8 +414,8 @@ const HostManage: FC<HostManageProps> = (props) => {
 };
 
 export default connect(
-  ({ treeData: { treeData }, loading: { models } }: ConnectState) => ({
+  ({ treeData: { treeData }, loading: { global } }: ConnectState) => ({
     treeData,
-    loading: models.hostData,
+    loading: global,
   })
 )(HostManage);
