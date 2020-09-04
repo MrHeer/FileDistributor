@@ -191,8 +191,7 @@ const FileManage: SFC<FileManageProps> = (props) => {
       onShowSizeChange: onShowSizeChange,
       pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
       onChange: onPageChange,
-      showTotal: (total: number, range: [number, number]) =>
-        `${range[0]}-${range[1]}, ${total}`,
+      showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`,
     },
     rowSelection: {
       onChange: onSelectChange,

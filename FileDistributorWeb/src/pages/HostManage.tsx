@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, FC, useState, ReactText, useEffect } from "react";
 import {
   Table,
   Form,
@@ -7,250 +7,273 @@ import {
   Row,
   Col,
   Button,
-  Icon,
   Popconfirm,
   Modal,
   Spin,
-  message
+  message,
 } from "antd";
-import { FormattedMessage, formatMessage } from "umi/locale";
+import { FormattedMessage, formatMessage, ConnectProps, Dispatch } from "umi";
 import { connect } from "dva";
+import React from "react";
+import Icon, { PlusCircleOutlined } from "@ant-design/icons";
+import { Host as HostModel } from "@/models/interface";
+import { ConnectState } from "@/models/connect";
+import { TableProps, ColumnsType } from "antd/lib/table/Table";
 
 const { confirm } = Modal;
 const FormItem = Form.Item;
 
-const ModalForm = Form.create({ name: "form_in_modal" })(
-  class extends Component {
-    render() {
-      const {
-        visible,
-        confirmLoading,
-        title,
-        onOk,
-        onCancel,
-        form,
-        formData,
-        onTest
-      } = this.props;
-      const { getFieldDecorator } = form;
-      return (
-        <Modal
-          confirmLoading={confirmLoading}
-          visible={visible}
-          title={title}
-          onCancel={() => {
-            onCancel();
+interface FormData {
+  hostId?: string;
+  groupName: string;
+  hostName: string;
+  ipAddress: string;
+  port: string;
+  userName: string;
+  password: string;
+}
+
+interface FormProps {
+  visible: boolean;
+  onCancel: () => void;
+  title: string;
+  onOk: (values: FormData) => void;
+  formData: FormData;
+  onTest: (values: FormData) => void;
+}
+
+const ModalForm: FC<FormProps> = (props) => {
+  const [form] = Form.useForm<FormData>();
+  const { visible, title, onOk, onCancel, formData, onTest } = props;
+  return (
+    <Modal
+      visible={visible}
+      title={title}
+      onCancel={() => {
+        onCancel();
+        form.resetFields();
+      }}
+      onOk={() => {
+        form
+          .validateFields()
+          .then((values) => {
             form.resetFields();
-          }}
-          onOk={() => {
-            // check
-            var fieldsValue = form.getFieldsValue();
-            fieldsValue.host_id = formData.host_id;
-            form.validateFields((errors, values) => {
-              if (errors == null) {
-                onOk(fieldsValue);
+            onOk(({ values, hostId: formData.hostId } as unknown) as FormData);
+          })
+          .catch((info) => {
+            message.error(formatMessage({ id: "fill_form" }));
+            console.error(info);
+          });
+      }}
+    >
+      <Form form={form} layout="vertical">
+        <FormItem
+          name="groupName"
+          label={formatMessage({ id: "group_name" })}
+          initialValue={formData.groupName}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "group_name_message" }),
+            },
+          ]}
+        >
+          <Input />
+        </FormItem>
+        <FormItem
+          name="hostName"
+          label={formatMessage({ id: "host_name" })}
+          initialValue={formData.hostName}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "host_name_message" }),
+            },
+          ]}
+        >
+          <Input />
+        </FormItem>
+        <FormItem
+          name="hostName"
+          label={formatMessage({ id: "host_name" })}
+          initialValue={formData.hostName}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "host_name_message" }),
+            },
+          ]}
+        >
+          <Input />
+        </FormItem>
+        <FormItem
+          name="ipAddress"
+          label={formatMessage({ id: "ip_address" })}
+          initialValue={formData.ipAddress}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "ip_address_message" }),
+            },
+          ]}
+        >
+          <Input />
+        </FormItem>
+        <FormItem
+          name="port"
+          label={formatMessage({ id: "port" })}
+          initialValue={formData.port}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "port_message" }),
+            },
+          ]}
+        >
+          <Input type="number" />
+        </FormItem>
+        <FormItem
+          name="userName"
+          label={formatMessage({ id: "user_name" })}
+          initialValue={formData.userName}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "user_name_message" }),
+            },
+          ]}
+        >
+          <Input />
+        </FormItem>
+        <FormItem
+          name="password"
+          label={formatMessage({ id: "password" })}
+          initialValue={formData.password}
+          rules={[
+            {
+              required: true,
+              message: formatMessage({ id: "password_message" }),
+            },
+          ]}
+        >
+          <Input type="password" />
+        </FormItem>
+        <Button
+          onClick={() => {
+            form
+              .validateFields()
+              .then((values) => {
                 form.resetFields();
-              } else {
+                onTest(({
+                  values,
+                  hostId: formData.hostId,
+                } as unknown) as FormData);
+              })
+              .catch((info) => {
                 message.error(formatMessage({ id: "fill_form" }));
-              }
-            });
+                console.error(info);
+              });
           }}
         >
-          <Form layout="vertical">
-            <FormItem label={formatMessage({ id: "group_name" })}>
-              {getFieldDecorator("group_name", {
-                initialValue: formData.group_name,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "group_name_message" })
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: "host_name" })}>
-              {getFieldDecorator("host_name", {
-                initialValue: formData.host_name,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "host_name_message" })
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: "ip_address" })}>
-              {getFieldDecorator("ip_address", {
-                initialValue: formData.ip_address,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "ip_address_message" })
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: "port" })}>
-              {getFieldDecorator("port", {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "port_message" })
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: "user_name" })}>
-              {getFieldDecorator("user_name", {
-                initialValue: formData.user_name,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "user_name_message" })
-                  }
-                ]
-              })(<Input />)}
-            </FormItem>
-            <FormItem label={formatMessage({ id: "password" })}>
-              {getFieldDecorator("password", {
-                initialValue: formData.password,
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: "password_message" })
-                  }
-                ]
-              })(<Input.Password />)}
-            </FormItem>
-            <Button
-              onClick={() => {
-                var fieldsValue = form.getFieldsValue();
-                fieldsValue.host_id = formData.host_id;
-                form.validateFields((errors, values) => {
-                  if (errors == null) {
-                    onTest(fieldsValue);
-                  } else {
-                    message.error(formatMessage({ id: "fill_form" }));
-                  }
-                });
-              }}
-            >
-              <FormattedMessage id="test" />
-            </Button>
-          </Form>
-        </Modal>
-      );
-    }
-  }
-);
-
-const mapStateToProps = state => {
-  const { hostData } = state["hostData"];
-  return {
-    hostData,
-    loading: state.loading.global
-  };
+          <FormattedMessage id="test" />
+        </Button>
+      </Form>
+    </Modal>
+  );
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    onQueryHost: () => {
-      dispatch({
-        type: "hostData/fetch"
-      });
-    },
+interface HostManageProps extends ConnectProps {
+  hostData: HostModel[];
+  loading?: boolean;
+  dispatch: Dispatch;
+}
 
-    onAddHost: data => {
-      dispatch({
-        type: "hostData/add",
-        payload: data
-      });
-    },
+const HostManage: FC<HostManageProps> = (props) => {
+  const { hostData, loading, dispatch } = props;
+  const [visible, setVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState(formatMessage({ id: "add" }));
+  const [selectedRowKeys, setSelectedRowKeys] = useState<ReactText[]>([]);
+  const [formData, setFormData] = useState<FormData>({
+    hostId: "",
+    groupName: "",
+    hostName: "",
+    ipAddress: "",
+    port: "22",
+    userName: "",
+    password: "",
+  });
 
-    onDeleteHost: data => {
-      dispatch({
-        type: "hostData/delete",
-        payload: data
-      });
-    },
+  useEffect(() => {
+    onQueryHost;
+  });
 
-    onEditHost: data => {
-      dispatch({
-        type: "hostData/edit",
-        payload: data
-      });
-    },
-
-    onTestHost: data => {
-      dispatch({
-        type: "hostData/test",
-        payload: data
-      });
-    }
-  };
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
-class HostManage extends Component {
-  onSelectChange = (selectedRowKeys, selectedRows) => {
-    const selectedKeys = [];
-    selectedRows.forEach(row => selectedKeys.push(row.key));
-    this.setState({
-      selectedRowKeys: selectedKeys
+  const onQueryHost = () => {
+    dispatch({
+      type: "hostData/fetch",
     });
   };
 
-  onShowSizeChange = (current, pageSize) => {};
+  const onAddHost = (data: FormData) => {
+    dispatch({
+      type: "hostData/add",
+      payload: data,
+    });
+  };
 
-  onPageChange = pageNumber => {};
+  const onDeleteHost = (data: ReactText[]) => {
+    dispatch({
+      type: "hostData/delete",
+      payload: data,
+    });
+  };
 
-  state = {
-    visible: false,
-    confirmLoading: false,
-    modalTitle: formatMessage({ id: "add" }),
-    hasData: true,
-    selectedRowKeys: [],
+  const onEditHost = (data: FormData) => {
+    dispatch({
+      type: "hostData/edit",
+      payload: data,
+    });
+  };
+
+  const onTestHost = (data: FormData) => {
+    dispatch({
+      type: "hostData/test",
+      payload: data,
+    });
+  };
+
+  const tableProps: TableProps<HostModel> = {
     pagination: {
       showQuickJumper: true,
       showSizeChanger: true,
-      onShowSizeChange: this.onShowSizeChange,
       pageSizeOptions: ["10", "20", "50", "100", "300", "500"],
-      onChange: this.onPageChange,
-      showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`
+      showTotal: (total, range) => `${range[0]}-${range[1]}, ${total}`,
     },
     rowSelection: {
-      onChange: this.onSelectChange
+      onChange: (selectedRowKeys) => {
+        setSelectedRowKeys(selectedRowKeys);
+      },
     },
-    formData: {
-      host_id: "",
-      group_name: "",
-      host_name: "",
-      ip_address: "",
-      port: "",
-      user_name: "",
-      password: ""
-    }
   };
 
-  columns = [
+  const columns: ColumnsType<HostModel> = [
     {
       title: formatMessage({ id: "group_name" }),
       dataIndex: "group_name",
       key: "group_name",
-      sorter: (a, b) => (a.group_name > b.group_name ? 1 : -1),
-      width: 350
+      sorter: (a, b) => (a.groupName > b.groupName ? 1 : -1),
+      width: 350,
     },
     {
       title: formatMessage({ id: "host_name" }),
       dataIndex: "host_name",
       key: "host_name",
-      width: 350
+      width: 350,
     },
     {
       title: formatMessage({ id: "ip_address" }),
       dataIndex: "ip_address",
       key: "ip_address",
-      width: 400
+      width: 400,
     },
     {
       title: formatMessage({ id: "action" }),
@@ -260,89 +283,77 @@ class HostManage extends Component {
         <span>
           <Popconfirm
             title={formatMessage({ id: "pop_confirm_title" })}
-            onConfirm={() => this.handleDelete(record.key)}
+            onConfirm={() => handleDelete(record.key)}
           >
             <a>
               <FormattedMessage id="delete" />
             </a>
           </Popconfirm>
           <Divider type="vertical" />
-          <a onClick={() => this.handleEdit(record)}>
+          <a onClick={() => handleEdit(record)}>
             <FormattedMessage id="edit" />
           </a>
         </span>
-      )
-    }
+      ),
+    },
   ];
 
-  onClickAdd = () => {
-    const formData = {
-      host_id: "",
-      group_name: "",
-      host_name: "",
-      ip_address: "",
-      port: "",
-      user_name: "",
-      password: ""
+  const onClickAdd = () => {
+    const data = {
+      hostId: "",
+      groupName: "",
+      hostName: "",
+      ipAddress: "",
+      port: "22",
+      userName: "",
+      password: "",
     };
-    this.setState({
-      visible: true,
-      modalTitle: formatMessage({ id: "add" }),
-      formData: formData
-    });
+    setVisible(true);
+    setModalTitle(formatMessage({ id: "add" }));
+    setFormData(data);
   };
 
   // add or edit host
-  handleOk = data => {
-    if (data.host_id == "") {
+  const handleOk = (data: FormData) => {
+    if (data.hostId == "") {
       // add host
-      this.props.onAddHost(data);
+      onAddHost(data);
     } else {
       // edit host
-      this.props.onEditHost(data);
+      onEditHost(data);
     }
-    this.setState({
-      visible: false
-    });
+    setVisible(false);
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false
-    });
+  const handleCancel = () => {
+    setVisible(false);
   };
 
-  handleEdit = row => {
-    const formData = {
-      host_id: row.key,
-      group_name: row.group_name,
-      host_name: row.host_name,
-      ip_address: row.ip_address,
-      port: "",
-      user_name: "",
-      password: ""
+  const handleEdit = (row: HostModel) => {
+    const data = {
+      hostId: row.key,
+      groupName: row.groupName,
+      hostName: row.hostName,
+      ipAddress: row.ipAddress,
+      port: row.port,
+      userName: row.userName,
+      password: "",
     };
-    this.setState({
-      visible: true,
-      modalTitle: formatMessage({ id: "edit" }),
-      formData: formData
-    });
+    setVisible(true);
+    setModalTitle(formatMessage({ id: "edit" }));
+    setFormData(data);
   };
 
   // delete you selected rows
-  onClickDelete = () => {
-    const data = {
-      hostID: this.state.selectedRowKeys
-    };
-    if (data.hostID.length > 0) {
-      const onDeleteHost = this.props.onDeleteHost;
+  const onClickDelete = () => {
+    if (selectedRowKeys.length > 0) {
       confirm({
         title: formatMessage({ id: "host_confirm_title" }),
-        content: formatMessage({ id: "total" }) + data.hostID.length,
+        content: formatMessage({ id: "total" }) + selectedRowKeys.length,
         okText: formatMessage({ id: "yes" }),
         okType: "danger",
         cancelText: formatMessage({ id: "no" }),
-        onOk: () => onDeleteHost(data)
+        onOk: () => onDeleteHost(selectedRowKeys),
       });
     } else {
       message.error(formatMessage({ id: "no_checked" }));
@@ -350,62 +361,57 @@ class HostManage extends Component {
   };
 
   // delete one row
-  handleDelete = key => {
-    const data = {
-      hostID: [key]
-    };
-    this.props.onDeleteHost(data);
+  const handleDelete = (key: ReactText) => {
+    onDeleteHost([key]);
   };
 
-  handleTest = data => {
-    this.props.onTestHost(data);
+  const handleTest = (data: FormData) => {
+    onTestHost(data);
   };
 
-  componentDidMount() {
-    this.props.onQueryHost();
-  }
+  return (
+    <div>
+      <Spin spinning={loading}>
+        <Row style={{ margin: 20 }}>
+          <Col span={2}>
+            <Button onClick={onClickAdd}>
+              <PlusCircleOutlined />
+              <FormattedMessage id="add" />
+            </Button>
+            <ModalForm
+              title={modalTitle}
+              visible={visible}
+              formData={formData}
+              onOk={handleOk}
+              onTest={handleTest}
+              onCancel={handleCancel}
+            ></ModalForm>
+          </Col>
+          <Col span={2}>
+            <Button onClick={onClickDelete} type="primary" danger>
+              <Icon type="minus-circle" />
+              <FormattedMessage id="delete" />
+            </Button>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Table
+              {...tableProps}
+              style={{ minHeight: 520 }}
+              columns={columns}
+              dataSource={hostData}
+            />
+          </Col>
+        </Row>
+      </Spin>
+    </div>
+  );
+};
 
-  render() {
-    return (
-      <div>
-        <Spin spinning={this.props.loading}>
-          <Row style={{ margin: 20 }}>
-            <Col span={2}>
-              <Button onClick={this.onClickAdd}>
-                <Icon type="plus-circle" />
-                <FormattedMessage id="add" />
-              </Button>
-              <ModalForm
-                title={this.state.modalTitle}
-                visible={this.state.visible}
-                formData={this.state.formData}
-                onOk={this.handleOk}
-                onTest={this.handleTest}
-                confirmLoading={this.state.confirmLoading}
-                onCancel={this.handleCancel}
-              ></ModalForm>
-            </Col>
-            <Col span={2}>
-              <Button onClick={this.onClickDelete} type="danger">
-                <Icon type="minus-circle" />
-                <FormattedMessage id="delete" />
-              </Button>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Table
-                {...this.state}
-                style={{ minHeight: 520 }}
-                columns={this.columns}
-                dataSource={this.props.hostData}
-              />
-            </Col>
-          </Row>
-        </Spin>
-      </div>
-    );
-  }
-}
-
-export default HostManage;
+export default connect(
+  ({ treeData: { treeData }, loading: { models } }: ConnectState) => ({
+    treeData,
+    loading: models.hostData,
+  })
+)(HostManage);

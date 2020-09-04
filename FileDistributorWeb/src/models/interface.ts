@@ -13,6 +13,8 @@ export interface Host {
   groupName: string;
   hostName: string;
   ipAddress: string;
+  port: string;
+  userName: string;
 }
 
 export interface File {
