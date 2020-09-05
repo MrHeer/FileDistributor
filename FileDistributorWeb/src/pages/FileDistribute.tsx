@@ -1,4 +1,4 @@
-import { SFC, useEffect, useState, ReactText } from "react";
+import { SFC, useEffect, useState } from "react";
 import {
   Row,
   Col,
@@ -11,10 +11,8 @@ import {
   Radio,
   Spin,
 } from "antd";
-import InfiniteScroll from "react-infinite-scroller";
 import { FormattedMessage, formatMessage, connect, ConnectProps } from "umi";
 
-const { TreeNode } = Tree;
 const RadioGroup = Radio.Group;
 type DistributeType = "safe" | "overwrite";
 
@@ -252,113 +250,84 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
 
   return (
     <Spin spinning={loading}>
-      <Row gutter={5}>
-        <Col span={8}>
+      <Row gutter={5} style={{ height: "calc(100vh - 200px)" }}>
+        <Col span={8} style={{ height: "100%" }}>
           <Card
             className={Styles.card}
             title={formatMessage({ id: "chose_file" })}
           >
-            <div
-              style={{
-                overflow: "auto",
-              }}
-            >
-              <InfiniteScroll
-                loadMore={() => {
-                  return;
-                }}
-              >
-                <Upload {...uploadProps} fileList={fileList}>
-                  <Button>
-                    <UploadOutlined />
-                    <FormattedMessage id="upload" />
-                  </Button>
-                </Upload>
-              </InfiniteScroll>
-            </div>
+            <Upload {...uploadProps} fileList={fileList}>
+              <Button>
+                <UploadOutlined />
+                <FormattedMessage id="upload" />
+              </Button>
+            </Upload>
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{ height: "100%" }}>
           <Card
             className={Styles.card}
             title={formatMessage({ id: "chose_host" })}
           >
-            <div
-              style={{
-                overflow: "auto",
-              }}
-            >
-              <InfiniteScroll
-                loadMore={() => {
-                  return;
-                }}
-              >
-                <Tree
-                  multiple={true}
-                  checkable
-                  onExpand={onExpand}
-                  expandedKeys={expandedKeys}
-                  autoExpandParent={autoExpandParent}
-                  onCheck={onCheck}
-                  checkedKeys={checkedKeys}
-                  treeData={treeData}
-                />
-              </InfiniteScroll>
-            </div>
+            <Tree
+              multiple={true}
+              checkable
+              onExpand={onExpand}
+              expandedKeys={expandedKeys}
+              autoExpandParent={autoExpandParent}
+              onCheck={onCheck}
+              checkedKeys={checkedKeys}
+              treeData={treeData}
+            />
           </Card>
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{ height: "100%" }}>
           <Card
             className={Styles.card}
             title={formatMessage({ id: "distribute_file" })}
           >
             <Row>
-              <Col>{formatMessage({ id: "checked" })}</Col>
-            </Row>
-            <Row>
-              <Col>
-                <div
-                  style={{
-                    overflow: "auto",
-                  }}
-                >
-                  <InfiniteScroll
-                    loadMore={() => {
-                      return;
-                    }}
-                  >
+              <Col span={24} flex={1}>
+                <Row>
+                  <Col>{formatMessage({ id: "checked" })}</Col>
+                </Row>
+                <Row>
+                  <Col flex={1}>
                     <List
                       size="small"
                       dataSource={selectedHosts}
                       renderItem={renderList}
                     />
-                  </InfiniteScroll>
-                </div>
+                  </Col>
+                </Row>
+                <Row
+                  justify="center"
+                  style={{ marginTop: 20, marginBottom: 20 }}
+                >
+                  <Col>
+                    <Input
+                      allowClear
+                      onChange={handleRemotePathChange}
+                      placeholder={formatMessage({ id: "remote_path" })}
+                    />
+                  </Col>
+                </Row>
+                <Row style={{ marginBottom: 20 }} justify="center">
+                  <Col>
+                    <RadioGroup onChange={onRadioChange} value={type}>
+                      <Radio value="safe">
+                        <FormattedMessage id="safe" />
+                      </Radio>
+                      <Radio value="overwrite">
+                        <FormattedMessage id="overwrite" />
+                      </Radio>
+                    </RadioGroup>
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <Col>{renderButton()}</Col>
+                </Row>
               </Col>
-            </Row>
-            <Row justify="center" style={{ marginTop: 20, marginBottom: 20 }}>
-              <Col>
-                <Input
-                  allowClear
-                  onChange={handleRemotePathChange}
-                  placeholder={formatMessage({ id: "remote_path" })}
-                />
-              </Col>
-            </Row>
-            <Row style={{ marginBottom: 20 }} justify="center">
-              <Col>
-                <RadioGroup onChange={onRadioChange} value={type}>
-                  <Radio value="safe">
-                    <FormattedMessage id="safe" />
-                  </Radio>
-                  <Radio value="overwrite">
-                    <FormattedMessage id="overwrite" />
-                  </Radio>
-                </RadioGroup>
-              </Col>
-            </Row>
-            <Row justify="center">
-              <Col>{renderButton()}</Col>
             </Row>
           </Card>
         </Col>

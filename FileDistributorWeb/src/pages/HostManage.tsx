@@ -373,7 +373,7 @@ const HostManage: FC<HostManageProps> = (props) => {
     <Spin spinning={loading}>
       <Row style={{ margin: 20 }}>
         <Col span={2}>
-          <Button onClick={onClickAdd}>
+          <Button onClick={onClickAdd} style={{ width: 100 }}>
             <PlusCircleOutlined />
             <FormattedMessage id="add" />
           </Button>
@@ -387,14 +387,19 @@ const HostManage: FC<HostManageProps> = (props) => {
           ></ModalForm>
         </Col>
         <Col span={2}>
-          <Button onClick={onClickDelete} type="primary" danger>
+          <Button
+            onClick={onClickDelete}
+            type="primary"
+            style={{ width: 100 }}
+            danger
+          >
             <MinusCircleOutlined />
             <FormattedMessage id="delete" />
           </Button>
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col span={24}>
           <Table
             {...tableProps}
             style={{ minHeight: 520 }}

@@ -256,61 +256,75 @@ const FileManage: SFC<FileManageProps> = (props) => {
   return (
     <Spin spinning={loading}>
       <Row gutter={10} style={{ margin: 20 }}>
-        <Col span={5}>
-          <Select
-            showSearch
-            style={{ width: "100%" }}
-            placeholder={formatMessage({ id: "chose_host" })}
-            onChange={handleSelectChange}
-            filterOption={(input, option) =>
-              option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            {hostData.map((host) => (
-              <Option key={host.key} value={host.key}>
-                {host.hostName}
-              </Option>
-            ))}
-          </Select>
+        <Col span={20}>
+          <Row gutter={10}>
+            <Col span={8}>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder={formatMessage({ id: "chose_host" })}
+                onChange={handleSelectChange}
+                filterOption={(input, option) =>
+                  option?.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {hostData.map((host) => (
+                  <Option key={host.key} value={host.key}>
+                    {host.hostName}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={8}>
+              <Input
+                value={remotePath}
+                onChange={handleRemotePathChange}
+                placeholder={formatMessage({ id: "remote_path" })}
+                allowClear
+              />
+            </Col>
+            <Col span={8}>
+              <Input
+                onChange={handleKeywordChange}
+                placeholder={formatMessage({ id: "keyword" })}
+                allowClear
+              />
+            </Col>
+          </Row>
         </Col>
-        <Col span={5}>
-          <Input
-            value={remotePath}
-            onChange={handleRemotePathChange}
-            placeholder={formatMessage({ id: "remote_path" })}
-            allowClear
-          />
-        </Col>
-        <Col span={5}>
-          <Input
-            onChange={handleKeywordChange}
-            placeholder={formatMessage({ id: "keyword" })}
-            allowClear
-          />
-        </Col>
-        <Col span={2}>
-          <Button onClick={handleQuery}>
-            <ReloadOutlined />
-            <FormattedMessage id="reload" />
-          </Button>
+        <Col span={4}>
+          <Row justify="end">
+            <Col span={4}>
+              <Button onClick={handleQuery}>
+                <ReloadOutlined />
+                <FormattedMessage id="reload" />
+              </Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <Row gutter={10} style={{ margin: 20 }}>
         <Col span={2}>
-          <Button onClick={onClickBack}>
+          <Button onClick={onClickBack} style={{ width: 100 }}>
             <RollbackOutlined />
             <FormattedMessage id="back" />
           </Button>
         </Col>
         <Col span={2}>
-          <Button onClick={onClickDelete} type="primary" danger>
+          <Button
+            onClick={onClickDelete}
+            style={{ width: 100 }}
+            type="primary"
+            danger
+          >
             <MinusCircleOutlined />
             <FormattedMessage id="delete" />
           </Button>
         </Col>
       </Row>
       <Row>
-        <Col>
+        <Col span={24}>
           <Table<FileModel>
             {...fileListProps}
             style={{ minHeight: 520 }}
