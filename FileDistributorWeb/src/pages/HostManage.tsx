@@ -371,8 +371,8 @@ const HostManage: FC<HostManageProps> = (props) => {
 
   return (
     <Spin spinning={loading}>
-      <Row style={{ margin: 20 }}>
-        <Col span={2}>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col>
           <Button onClick={onClickAdd} style={{ width: 100 }}>
             <PlusCircleOutlined />
             <FormattedMessage id="add" />
@@ -386,7 +386,7 @@ const HostManage: FC<HostManageProps> = (props) => {
             onCancel={handleCancel}
           ></ModalForm>
         </Col>
-        <Col span={2}>
+        <Col>
           <Button
             onClick={onClickDelete}
             type="primary"

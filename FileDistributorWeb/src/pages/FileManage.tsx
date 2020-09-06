@@ -305,13 +305,13 @@ const FileManage: SFC<FileManageProps> = (props) => {
         </Col>
       </Row>
       <Row gutter={10} style={{ margin: 20 }}>
-        <Col span={2}>
+        <Col>
           <Button onClick={onClickBack} style={{ width: 100 }}>
             <RollbackOutlined />
             <FormattedMessage id="back" />
           </Button>
         </Col>
-        <Col span={2}>
+        <Col>
           <Button
             onClick={onClickDelete}
             style={{ width: 100 }}
