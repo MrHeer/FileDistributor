@@ -14,6 +14,4 @@
 
 ## Todo
 
-- [x] add a status for each host after distribute
-- [x] add 'retry' feature after distribute exception
-- [x] add 'FileManage' module
+- [x] refactor backend
