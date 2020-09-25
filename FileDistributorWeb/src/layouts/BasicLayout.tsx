@@ -88,6 +88,7 @@ const BasicLayout: FC = (props) => {
           style={{
             padding: 24,
             background: "#fff",
+            height: "calc(100vh - 100px)",
           }}
         >
           {props.children}

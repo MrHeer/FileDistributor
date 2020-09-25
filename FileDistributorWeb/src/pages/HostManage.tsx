@@ -371,45 +371,43 @@ const HostManage: FC<HostManageProps> = (props) => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ height: "calc(100vh - 200px)" }}>
-        <Row gutter={10} style={{ margin: 20 }}>
-          <Col>
-            <Button onClick={onClickAdd} style={{ width: 100 }}>
-              <PlusCircleOutlined />
-              <FormattedMessage id="add" />
-            </Button>
-            <ModalForm
-              title={modalTitle}
-              visible={visible}
-              formData={formData}
-              onOk={handleOk}
-              onTest={handleTest}
-              onCancel={handleCancel}
-            ></ModalForm>
-          </Col>
-          <Col>
-            <Button
-              onClick={onClickDelete}
-              type="primary"
-              style={{ width: 100 }}
-              danger
-            >
-              <MinusCircleOutlined />
-              <FormattedMessage id="delete" />
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Table
-              {...tableProps}
-              style={{ height: "100%" }}
-              columns={columns}
-              dataSource={hostData}
-            />
-          </Col>
-        </Row>
-      </div>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col>
+          <Button onClick={onClickAdd} style={{ width: 100 }}>
+            <PlusCircleOutlined />
+            <FormattedMessage id="add" />
+          </Button>
+          <ModalForm
+            title={modalTitle}
+            visible={visible}
+            formData={formData}
+            onOk={handleOk}
+            onTest={handleTest}
+            onCancel={handleCancel}
+          ></ModalForm>
+        </Col>
+        <Col>
+          <Button
+            onClick={onClickDelete}
+            type="primary"
+            style={{ width: 100 }}
+            danger
+          >
+            <MinusCircleOutlined />
+            <FormattedMessage id="delete" />
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <Table
+            {...tableProps}
+            style={{ height: "100%" }}
+            columns={columns}
+            dataSource={hostData}
+          />
+        </Col>
+      </Row>
     </Spin>
   );
 };

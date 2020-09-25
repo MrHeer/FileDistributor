@@ -1,9 +1,10 @@
 import React from "react";
 import { Link } from "umi";
-import { formatMessage } from "umi";
+import { useIntl } from "umi";
 import { Result, Button } from "antd";
 
 export default () => {
+  const { formatMessage } = useIntl();
   return (
     <Result
       status="403"

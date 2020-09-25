@@ -255,87 +255,84 @@ const FileManage: SFC<FileManageProps> = (props) => {
 
   return (
     <Spin spinning={loading}>
-      <div style={{ height: "calc(100vh - 200px)" }}>
-        <Row gutter={10} style={{ margin: 20 }}>
-          <Col span={20}>
-            <Row gutter={10}>
-              <Col span={8}>
-                <Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  placeholder={formatMessage({ id: "chose_host" })}
-                  onChange={handleSelectChange}
-                  filterOption={(input, option) =>
-                    option?.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  {hostData.map((host) => (
-                    <Option key={host.key} value={host.key}>
-                      {host.hostName}
-                    </Option>
-                  ))}
-                </Select>
-              </Col>
-              <Col span={8}>
-                <Input
-                  value={remotePath}
-                  onChange={handleRemotePathChange}
-                  placeholder={formatMessage({ id: "remote_path" })}
-                  allowClear
-                />
-              </Col>
-              <Col span={8}>
-                <Input
-                  onChange={handleKeywordChange}
-                  placeholder={formatMessage({ id: "keyword" })}
-                  allowClear
-                />
-              </Col>
-            </Row>
-          </Col>
-          <Col span={4}>
-            <Row justify="end">
-              <Col span={4}>
-                <Button onClick={handleQuery}>
-                  <ReloadOutlined />
-                  <FormattedMessage id="reload" />
-                </Button>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row gutter={10} style={{ margin: 20 }}>
-          <Col>
-            <Button onClick={onClickBack} style={{ width: 100 }}>
-              <RollbackOutlined />
-              <FormattedMessage id="back" />
-            </Button>
-          </Col>
-          <Col>
-            <Button
-              onClick={onClickDelete}
-              style={{ width: 100 }}
-              type="primary"
-              danger
-            >
-              <MinusCircleOutlined />
-              <FormattedMessage id="delete" />
-            </Button>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <Table<FileModel>
-              {...fileListProps}
-              style={{ height: "100%" }}
-              columns={columns}
-              dataSource={fileData}
-            />
-          </Col>
-        </Row>
-      </div>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col span={20}>
+          <Row gutter={10}>
+            <Col span={8}>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder={formatMessage({ id: "chose_host" })}
+                onChange={handleSelectChange}
+                filterOption={(input, option) =>
+                  option?.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                  0
+                }
+              >
+                {hostData.map((host) => (
+                  <Option key={host.key} value={host.key}>
+                    {host.hostName}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={8}>
+              <Input
+                value={remotePath}
+                onChange={handleRemotePathChange}
+                placeholder={formatMessage({ id: "remote_path" })}
+                allowClear
+              />
+            </Col>
+            <Col span={8}>
+              <Input
+                onChange={handleKeywordChange}
+                placeholder={formatMessage({ id: "keyword" })}
+                allowClear
+              />
+            </Col>
+          </Row>
+        </Col>
+        <Col span={4}>
+          <Row justify="end">
+            <Col span={4}>
+              <Button onClick={handleQuery}>
+                <ReloadOutlined />
+                <FormattedMessage id="reload" />
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <Row gutter={10} style={{ margin: 20 }}>
+        <Col>
+          <Button onClick={onClickBack} style={{ width: 100 }}>
+            <RollbackOutlined />
+            <FormattedMessage id="back" />
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            onClick={onClickDelete}
+            style={{ width: 100 }}
+            type="primary"
+            danger
+          >
+            <MinusCircleOutlined />
+            <FormattedMessage id="delete" />
+          </Button>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <Table<FileModel>
+            {...fileListProps}
+            style={{ height: "100%" }}
+            columns={columns}
+            dataSource={fileData}
+          />
+        </Col>
+      </Row>
     </Spin>
   );
 };
