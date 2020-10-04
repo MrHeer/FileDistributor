@@ -34,7 +34,7 @@ public class FileModel {
         private String user;
         private String group;
         private String size;
-        private String modify_time;
+        private String modifyTime;
         private String name;
 
         public String getKey() {
@@ -93,12 +93,12 @@ public class FileModel {
             this.size = size;
         }
 
-        public String getModify_time() {
-            return modify_time;
+        public String getModifyTime() {
+            return modifyTime;
         }
 
-        public void setModify_time(String modify_time) {
-            this.modify_time = modify_time;
+        public void setModifyTime(String modifyTime) {
+            this.modifyTime = modifyTime;
         }
 
         public String getName() {

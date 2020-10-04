@@ -3,7 +3,7 @@ package com.mrheer.filedistributorservice.model;
 import java.util.List;
 
 public class HostModel {
-    private string status;
+    private String status;
     private List<HostDataBean> hostData;
 
     public String getStatus() {
@@ -24,9 +24,9 @@ public class HostModel {
 
     public static class HostDataBean {
         private String key;
-        private String group_name;
-        private String host_name;
-        private String ip_address;
+        private String groupName;
+        private String hostName;
+        private String ipAddress;
 
         public String getKey() {
             return key;
@@ -36,28 +36,28 @@ public class HostModel {
             this.key = key;
         }
 
-        public String getGroup_name() {
-            return group_name;
+        public String getGroupName() {
+            return groupName;
         }
 
-        public void setGroup_name(String group_name) {
-            this.group_name = group_name;
+        public void setGroupName(String groupName) {
+            this.groupName = groupName;
         }
 
-        public String getHost_name() {
-            return host_name;
+        public String getHostName() {
+            return hostName;
         }
 
-        public void setHost_name(String host_name) {
-            this.host_name = host_name;
+        public void setHostName(String hostName) {
+            this.hostName = hostName;
         }
 
-        public String getIp_address() {
-            return ip_address;
+        public String getIpAddress() {
+            return ipAddress;
         }
 
-        public void setIp_address(String ip_address) {
-            this.ip_address = ip_address;
+        public void setIpAddress(String ipAddress) {
+            this.ipAddress = ipAddress;
         }
     }
 }
