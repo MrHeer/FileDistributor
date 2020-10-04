@@ -60,7 +60,10 @@ const ModalForm: FC<FormProps> = (props) => {
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onOk(({ values, hostId: formData.hostId } as unknown) as FormData);
+            onOk(({
+              ...values,
+              hostId: formData.hostId,
+            } as unknown) as FormData);
           })
           .catch((info) => {
             message.error(formatMessage({ id: "fill_form" }));
@@ -154,7 +157,7 @@ const ModalForm: FC<FormProps> = (props) => {
               .then((values) => {
                 form.resetFields();
                 onTest(({
-                  values,
+                  ...values,
                   hostId: formData.hostId,
                 } as unknown) as FormData);
               })

@@ -42,11 +42,12 @@ const HostDataModel: HostDataModelType = {
   state: defaultState,
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch({ payload, callback }, { call, put }) {
       const data = yield call(getHostData, payload);
       yield put({
         type: "hostData",
         payload: data,
+        callback,
       });
     },
 
@@ -88,8 +89,9 @@ const HostDataModel: HostDataModelType = {
   },
 
   reducers: {
-    hostData(state = defaultState, { payload: data }) {
+    hostData(state = defaultState, { payload: data, callback }) {
       const { hostData } = data;
+      callback(hostData);
       return {
         ...state,
         hostData,

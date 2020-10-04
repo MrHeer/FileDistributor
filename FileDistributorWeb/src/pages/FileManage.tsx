@@ -21,6 +21,7 @@ import {
 import { stringify } from "qs";
 import {
   File as FileModel,
+  Host,
   Host as HostModel,
   Status,
 } from "@/models/interface";
@@ -35,19 +36,17 @@ import {
   RollbackOutlined,
 } from "@ant-design/icons";
 
-const Option = Select.Option;
 const { confirm } = Modal;
 
 interface FileManageProps extends ConnectProps {
   fileData: FileModel[];
-  status: Status;
   hostData: HostModel[];
   loading?: boolean;
   dispatch: Dispatch;
 }
 
 const FileManage: FC<FileManageProps> = (props) => {
-  const { fileData, status, hostData = [], loading = true, dispatch } = props;
+  const { fileData, hostData = [], loading = true, dispatch } = props;
 
   const [selectedFileKeys, setSelectedFileKeys] = useState<ReactText[]>([]);
   const [hostID, setHostID] = useState("");
@@ -59,6 +58,11 @@ const FileManage: FC<FileManageProps> = (props) => {
   const onQueryHost = () => {
     dispatch({
       type: "hostData/fetch",
+      callback: (hosts: Host[]) => {
+        if (hosts.length > 0) {
+          setHostID(hosts[0].key);
+        }
+      },
     });
   };
 
@@ -97,7 +101,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   };
 
   // query file data
-  const handleQuery = () => {
+  const handleFilesQuery = () => {
     const data = {
       hostID: hostID,
       remotePath: remotePath,
@@ -278,17 +282,24 @@ const FileManage: FC<FileManageProps> = (props) => {
                 style={{ width: "100%" }}
                 placeholder={formatMessage({ id: "chose_host" })}
                 onChange={handleSelectChange}
-                filterOption={(input, option) =>
-                  option?.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                  0
-                }
-              >
-                {hostData.map((host) => (
-                  <Option key={host.key} value={host.key}>
-                    {host.hostName}
-                  </Option>
-                ))}
-              </Select>
+                value={hostID}
+                options={hostData.map((host) => ({
+                  key: host.key,
+                  value: host.key,
+                  label: host.hostName,
+                }))}
+                filterOption={(input, option) => {
+                  if (option && option.label) {
+                    return (
+                      option.label
+                        .toString()
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    );
+                  }
+                  return true;
+                }}
+              ></Select>
             </Col>
             <Col span={8}>
               <Input
@@ -310,7 +321,7 @@ const FileManage: FC<FileManageProps> = (props) => {
         <Col span={4}>
           <Row justify="end">
             <Col span={4}>
-              <Button onClick={handleQuery}>
+              <Button onClick={handleFilesQuery}>
                 <ReloadOutlined />
                 <FormattedMessage id="reload" />
               </Button>
@@ -354,11 +365,10 @@ const FileManage: FC<FileManageProps> = (props) => {
 export default connect(
   ({
     hostData: { hostData },
-    fileData: { fileData, status },
+    fileData: { fileData },
     loading: { global },
   }: ConnectState) => ({
     fileData,
-    status,
     hostData,
     loading: global,
   })
