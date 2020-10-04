@@ -1,4 +1,4 @@
-import { Component, FC, useState, ReactText, useEffect } from "react";
+import { FC, useState, ReactText, useEffect } from "react";
 import {
   Table,
   Form,
@@ -12,11 +12,11 @@ import {
   Spin,
   message,
 } from "antd";
-import { FormattedMessage, formatMessage, ConnectProps, Dispatch } from "umi";
+import { FormattedMessage, useIntl, ConnectProps, Dispatch } from "umi";
 import { connect } from "dva";
 import React from "react";
 import { PlusCircleOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { Host as HostModel } from "@/models/interface";
+import { Host as HostModel, Status } from "@/models/interface";
 import { ConnectState } from "@/models/connect";
 import { TableProps, ColumnsType } from "antd/lib/table/Table";
 
@@ -44,7 +44,9 @@ interface FormProps {
 
 const ModalForm: FC<FormProps> = (props) => {
   const [form] = Form.useForm<FormData>();
+  const { formatMessage } = useIntl();
   const { visible, title, onOk, onCancel, formData, onTest } = props;
+  form.setFieldsValue(formData);
   return (
     <Modal
       visible={visible}
@@ -75,19 +77,6 @@ const ModalForm: FC<FormProps> = (props) => {
             {
               required: true,
               message: formatMessage({ id: "group_name_message" }),
-            },
-          ]}
-        >
-          <Input />
-        </FormItem>
-        <FormItem
-          name="hostName"
-          label={formatMessage({ id: "host_name" })}
-          initialValue={formData.hostName}
-          rules={[
-            {
-              required: true,
-              message: formatMessage({ id: "host_name_message" }),
             },
           ]}
         >
@@ -189,6 +178,8 @@ interface HostManageProps extends ConnectProps {
 }
 
 const HostManage: FC<HostManageProps> = (props) => {
+  const { formatMessage } = useIntl();
+
   const { hostData, loading, dispatch } = props;
   const [visible, setVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState(formatMessage({ id: "add" }));
@@ -213,6 +204,13 @@ const HostManage: FC<HostManageProps> = (props) => {
     dispatch({
       type: "hostData/add",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "add_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "add_error" }));
+        }
+      },
     });
   };
 
@@ -220,6 +218,13 @@ const HostManage: FC<HostManageProps> = (props) => {
     dispatch({
       type: "hostData/delete",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "delete_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "delete_error" }));
+        }
+      },
     });
   };
 
@@ -227,6 +232,13 @@ const HostManage: FC<HostManageProps> = (props) => {
     dispatch({
       type: "hostData/edit",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "edit_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "edit_error" }));
+        }
+      },
     });
   };
 
@@ -234,6 +246,13 @@ const HostManage: FC<HostManageProps> = (props) => {
     dispatch({
       type: "hostData/test",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "test_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "test_error" }));
+        }
+      },
     });
   };
 

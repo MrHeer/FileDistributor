@@ -1,4 +1,4 @@
-import React, { SFC, useEffect, useState, ReactText } from "react";
+import React, { FC, useEffect, useState, ReactText } from "react";
 import {
   Table,
   Select,
@@ -13,13 +13,17 @@ import {
 } from "antd";
 import {
   FormattedMessage,
-  formatMessage,
+  useIntl,
   connect,
   ConnectProps,
   Dispatch,
 } from "umi";
 import { stringify } from "qs";
-import { File as FileModel, Host as HostModel } from "@/models/interface";
+import {
+  File as FileModel,
+  Host as HostModel,
+  Status,
+} from "@/models/interface";
 import { ConnectState } from "@/models/connect";
 import { TableProps, ColumnsType } from "antd/lib/table/Table";
 import {
@@ -36,18 +40,21 @@ const { confirm } = Modal;
 
 interface FileManageProps extends ConnectProps {
   fileData: FileModel[];
+  status: Status;
   hostData: HostModel[];
   loading?: boolean;
   dispatch: Dispatch;
 }
 
-const FileManage: SFC<FileManageProps> = (props) => {
-  const { fileData, hostData = [], loading = true, dispatch } = props;
+const FileManage: FC<FileManageProps> = (props) => {
+  const { fileData, status, hostData = [], loading = true, dispatch } = props;
 
   const [selectedFileKeys, setSelectedFileKeys] = useState<ReactText[]>([]);
   const [hostID, setHostID] = useState("");
   const [remotePath, setRemotePath] = useState("");
   const [keyword, setKeyword] = useState("");
+
+  const { formatMessage } = useIntl();
 
   const onQueryHost = () => {
     dispatch({
@@ -75,6 +82,13 @@ const FileManage: SFC<FileManageProps> = (props) => {
     dispatch({
       type: "fileData/delete",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "delete_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "delete_error" }));
+        }
+      },
     });
   };
 
@@ -340,10 +354,11 @@ const FileManage: SFC<FileManageProps> = (props) => {
 export default connect(
   ({
     hostData: { hostData },
-    fileData: { fileData },
+    fileData: { fileData, status },
     loading: { global },
   }: ConnectState) => ({
     fileData,
+    status,
     hostData,
     loading: global,
   })

@@ -1,6 +1,5 @@
 import { getFileData, deleteFile } from "@/services/api";
-import { message } from "antd";
-import { formatMessage, Effect, Reducer } from "umi";
+import { Effect, Reducer } from "umi";
 import { File, Status } from "./interface";
 
 const defaultState: FileDataModelState = {
@@ -39,11 +38,12 @@ const FileDataModel: FileDataModelType = {
       });
     },
 
-    *delete({ payload }, { call, put }) {
+    *delete({ payload, callback }, { call, put }) {
       const data = yield call(deleteFile, payload);
       yield put({
         type: "deleteFile",
         payload: data,
+        callback,
       });
     },
   },
@@ -57,16 +57,13 @@ const FileDataModel: FileDataModelType = {
       };
     },
 
-    deleteFile(state = defaultState, { payload: data }) {
+    deleteFile(state = defaultState, { payload: data, callback }) {
       const { fileData, status } = data;
-      if (status === "success") {
-        message.success(formatMessage({ id: "delete_success" }));
-      } else if (status === "error") {
-        message.error(formatMessage({ id: "delete_error" }));
-      }
+      callback(status);
       return {
         ...state,
         fileData,
+        status,
       };
     },
   },

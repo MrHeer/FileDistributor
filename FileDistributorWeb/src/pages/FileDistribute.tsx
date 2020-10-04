@@ -1,4 +1,4 @@
-import { SFC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Row,
   Col,
@@ -10,8 +10,9 @@ import {
   List,
   Radio,
   Spin,
+  message,
 } from "antd";
-import { FormattedMessage, formatMessage, connect, ConnectProps } from "umi";
+import { FormattedMessage, useIntl, connect, ConnectProps } from "umi";
 
 const RadioGroup = Radio.Group;
 type DistributeType = "safe" | "overwrite";
@@ -23,6 +24,7 @@ import {
   DistributeHost,
   ButtonType,
   Tree as TreeModel,
+  Status,
 } from "@/models/interface";
 import React from "react";
 import { UploadFile, UploadChangeParam } from "antd/lib/upload/interface";
@@ -46,7 +48,7 @@ interface FileDistributeProps extends ConnectProps {
   dispatch: Dispatch;
 }
 
-const FileDistribute: SFC<FileDistributeProps> = (props) => {
+const FileDistribute: FC<FileDistributeProps> = (props) => {
   const {
     treeData,
     selectedHosts,
@@ -61,6 +63,8 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
   const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([]);
   const [remotePath, setRemotePath] = useState("");
   const [type, setType] = useState<DistributeType>("safe");
+
+  const { formatMessage } = useIntl();
 
   const onQueryTree = () => {
     dispatch({
@@ -77,6 +81,13 @@ const FileDistribute: SFC<FileDistributeProps> = (props) => {
     dispatch({
       type: "distributeData/distribute",
       payload: data,
+      callback: (status: Status) => {
+        if (status === "success") {
+          message.success(formatMessage({ id: "distribute_success" }));
+        } else if (status === "error") {
+          message.error(formatMessage({ id: "distribute_error" }));
+        }
+      },
     });
   };
 

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import { ConfigProvider } from "antd";
 import { getLocale } from "umi";
 import BasicLayout from "./BasicLayout";

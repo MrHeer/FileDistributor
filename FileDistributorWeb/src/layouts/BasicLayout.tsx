@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { Layout, Menu, Row, Col, Button } from "antd";
 import { Link, useLocation } from "umi";
-import { FormattedMessage, formatMessage, getLocale, setLocale } from "umi";
+import { FormattedMessage, useIntl, getLocale, setLocale } from "umi";
 import {
   RocketOutlined,
   FileOutlined,
@@ -15,6 +15,7 @@ const { Header, Content, Footer } = Layout;
 const BasicLayout: FC = (props) => {
   const [selectedKey, setSelectedKey] = useState("1");
   const { pathname } = useLocation();
+  const { formatMessage } = useIntl();
 
   // change the language
   const onClickLang = () => {

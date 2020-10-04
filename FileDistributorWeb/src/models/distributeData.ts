@@ -1,7 +1,6 @@
 import { distribute } from "@/services/api";
-import { message } from "antd";
-import { formatMessage, Effect, Reducer } from "umi";
-import { DistributeHost as Host, ButtonType } from "./interface";
+import { Effect, Reducer } from "umi";
+import { DistributeHost as Host, ButtonType, Status } from "./interface";
 
 const defaultState: DistributeDataModelState = {
   distributeStatus: "",
@@ -10,7 +9,7 @@ const defaultState: DistributeDataModelState = {
 };
 
 export interface DistributeDataModelState {
-  distributeStatus: string;
+  distributeStatus: Status | "";
   selectedHosts: Host[];
   buttonType: ButtonType;
 }
@@ -32,27 +31,31 @@ const DistributeDataModel: DistributeDataModelType = {
   state: defaultState,
 
   effects: {
-    *distribute({ payload }, { call, put }) {
+    *distribute({ payload, callback }, { call, put }) {
       const data = yield call(distribute, payload);
       yield put({
         type: "distributeData",
         payload: data,
+        callback,
       });
     },
   },
 
   reducers: {
-    distributeData(_state, { payload: data }): DistributeDataModelState {
+    distributeData(
+      state,
+      { payload: data, callback }
+    ): DistributeDataModelState {
       const { distributeStatus, selectedHosts } = data;
+      callback(distributeStatus);
       let buttonType: ButtonType = "reset";
       if (distributeStatus === "success") {
         buttonType = "reset";
-        message.success(formatMessage({ id: "distribute_success" }));
       } else if (distributeStatus === "error") {
         buttonType = "retry";
-        message.error(formatMessage({ id: "distribute_error" }));
       }
       return {
+        ...state,
         distributeStatus,
         selectedHosts,
         buttonType,

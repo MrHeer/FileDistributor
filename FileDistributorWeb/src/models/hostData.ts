@@ -5,8 +5,7 @@ import {
   editHost,
   testHost,
 } from "@/services/api";
-import { message } from "antd";
-import { formatMessage, Effect, Reducer } from "umi";
+import { Effect, Reducer } from "umi";
 import { Host, Status } from "./interface";
 
 const defaultState: HostDataModelState = {
@@ -51,35 +50,39 @@ const HostDataModel: HostDataModelType = {
       });
     },
 
-    *add({ payload }, { call, put }) {
+    *add({ payload, callback }, { call, put }) {
       const data = yield call(addHost, payload);
       yield put({
         type: "addHost",
         payload: data,
+        callback,
       });
     },
 
-    *delete({ payload }, { call, put }) {
+    *delete({ payload, callback }, { call, put }) {
       const data = yield call(deleteHost, payload);
       yield put({
         type: "deleteHost",
         payload: data,
+        callback,
       });
     },
 
-    *edit({ payload }, { call, put }) {
+    *edit({ payload, callback }, { call, put }) {
       const data = yield call(editHost, payload);
       yield put({
         type: "editHost",
         payload: data,
+        callback,
       });
     },
 
-    *test({ payload }, { call, put }) {
+    *test({ payload, callback }, { call, put }) {
       const data = yield call(testHost, payload);
       yield put({
         type: "testHost",
         payload: data,
+        callback,
       });
     },
   },
@@ -93,52 +96,39 @@ const HostDataModel: HostDataModelType = {
       };
     },
 
-    addHost(state = defaultState, { payload: data }) {
+    addHost(state = defaultState, { payload: data, callback }) {
       const { hostData, status } = data;
-      if (status === "success") {
-        message.success(formatMessage({ id: "add_success" }));
-      } else if (status === "error") {
-        message.error(formatMessage({ id: "add_error" }));
-      }
+      callback(status);
       return {
         ...state,
         hostData,
+        status,
       };
     },
 
-    deleteHost(state = defaultState, { payload: data }) {
+    deleteHost(state = defaultState, { payload: data, callback }) {
       const { hostData, status } = data;
-      if (status === "success") {
-        message.success(formatMessage({ id: "delete_success" }));
-      } else if (status === "error") {
-        message.error(formatMessage({ id: "delete_error" }));
-      }
+      callback(status);
       return {
         ...state,
         hostData,
+        status,
       };
     },
 
-    editHost(state = defaultState, { payload: data }) {
+    editHost(state = defaultState, { payload: data, callback }) {
       const { hostData, status } = data;
-      if (status === "success") {
-        message.success(formatMessage({ id: "edit_success" }));
-      } else if (status === "error") {
-        message.error(formatMessage({ id: "edit_error" }));
-      }
+      callback(status);
       return {
         ...state,
         hostData,
+        status,
       };
     },
 
-    testHost(state = defaultState, { payload: data }) {
+    testHost(state = defaultState, { payload: data, callback }) {
       const { status } = data;
-      if (status === "success") {
-        message.success(formatMessage({ id: "test_success" }));
-      } else if (status === "error") {
-        message.error(formatMessage({ id: "test_error" }));
-      }
+      callback(status);
       return {
         ...state,
         status,
