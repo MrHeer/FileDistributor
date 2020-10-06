@@ -1,12 +1,6 @@
 package com.mrheer.filedistributorservice.model;
 
 public class UploadStatusModel {
-
-    /**
-     * uid : uid5135
-     * status : success
-     */
-
     private String uid;
     private String status;
 

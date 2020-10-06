@@ -1,12 +1,6 @@
 package com.mrheer.filedistributorservice.model;
 
 public class SelectedHost {
-    /**
-     * key : H-0
-     * title : Host-0
-     * status : success
-     */
-
     private String key;
     private String title;
     private String status;

@@ -88,7 +88,7 @@ public class Sftp {
             file.setName(lsEntry.getFilename());
 
             file.setSize(getPrintSize(attrs.getSize()));
-            file.setModify_time(attrs.getMtimeString());
+            file.setModifyTime(attrs.getMtimeString());
             fileList.add(file);
         });
         fileModel.setFileData(fileList);

@@ -3,18 +3,10 @@ package com.mrheer.filedistributorservice.model;
 import java.util.List;
 
 public class DistributeModel {
-
-    /**
-     * fileList : [{"uid":"rc-upload-1552719767003-2","lastModified":1547135172668,"lastModifiedDate":"2019-01-10T15:46:12.668Z","name":"201811_Bill.pdf","size":226030,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552719767003-2"},"status":"done","response":{"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}},{"uid":"rc-upload-1552719767003-3","lastModified":1547135213133,"lastModifiedDate":"2019-01-10T15:46:53.133Z","name":"201812_Bill.pdf","size":227210,"type":"application/pdf","percent":100,"originFileObj":{"uid":"rc-upload-1552719767003-3"},"status":"done","response":{"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}}]
-     * selectedHost : [{"key":"H-9","title":"Host-9","status":"wait"},{"key":"H-10","title":"Host-10","status":"wait"},{"key":"H-11","title":"Host-11","status":"wait"},{"key":"H-12","title":"Host-12","status":"wait"},{"key":"H-13","title":"Host-13","status":"wait"}]
-     * remotePath : /upload
-     * type : safe
-     */
-
     private String remotePath;
     private String type;
     private List<FileListBean> fileList;
-    private List<SelectedHost> selectedHost;
+    private List<SelectedHost> selectedHosts;
 
     public String getRemotePath() {
         return remotePath;
@@ -40,28 +32,15 @@ public class DistributeModel {
         this.fileList = fileList;
     }
 
-    public List<SelectedHost> getSelectedHost() {
-        return selectedHost;
+    public List<SelectedHost> getSelectedHosts() {
+        return selectedHosts;
     }
 
-    public void setSelectedHost(List<SelectedHost> selectedHost) {
-        this.selectedHost = selectedHost;
+    public void setSelectedHosts(List<SelectedHost> selectedHosts) {
+        this.selectedHosts = selectedHosts;
     }
 
     public static class FileListBean {
-        /**
-         * uid : rc-upload-1552719767003-2
-         * lastModified : 1547135172668
-         * lastModifiedDate : 2019-01-10T15:46:12.668Z
-         * name : 201811_Bill.pdf
-         * size : 226030
-         * type : application/pdf
-         * percent : 100
-         * originFileObj : {"uid":"rc-upload-1552719767003-2"}
-         * status : done
-         * response : {"uid":"uid-xxx","url":"/uploadFile/xxx","status":"success"}
-         */
-
         private String uid;
         private long lastModified;
         private String lastModifiedDate;

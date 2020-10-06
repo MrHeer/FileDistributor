@@ -1,9 +1,9 @@
 plugins {
-    id 'java'
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE'
-    id 'com.gradle.build-scan' version '2.1'
-    id 'org.springframework.boot' version '2.1.2.RELEASE'
+    id 'org.springframework.boot' version '2.3.4.RELEASE'
 }
+
+apply plugin: 'java'
+apply plugin: 'io.spring.dependency-management'
 
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -19,15 +19,6 @@ dependencies {
     implementation 'com.jcraft:jsch:0.1.55'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
-
-buildScan {
-    // always accept the terms of service
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-
-    // always publish a build scan
-    publishAlways()
 }
 
 bootJar {

@@ -24,9 +24,9 @@ public class HostManageService {
         List<HostModel.HostDataBean> hostDataBeanList = new ArrayList<>();
         for (HostEntity entity : list) {
             HostModel.HostDataBean hostDataBean = new HostModel.HostDataBean();
-            hostDataBean.setGroup_name(entity.getGroupName());
-            hostDataBean.setHost_name(entity.getHostName());
-            hostDataBean.setIp_address(entity.getIpAddress());
+            hostDataBean.setGroupName(entity.getGroupName());
+            hostDataBean.setHostName(entity.getHostName());
+            hostDataBean.setIpAddress(entity.getIpAddress());
             hostDataBean.setKey(String.valueOf(entity.getId()));
             hostDataBeanList.add(hostDataBean);
         }

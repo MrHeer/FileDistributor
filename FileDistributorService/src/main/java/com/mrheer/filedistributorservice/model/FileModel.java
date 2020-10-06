@@ -15,18 +15,6 @@ public class FileModel {
     }
 
     public static class FileDataBean {
-        /**
-         * key : 1
-         * type : -
-         * permissions : r-x r-x r-x
-         * numbers : 1
-         * user : root
-         * group : root
-         * size : 1M
-         * modify_time : 2019-03-23 15:32:40
-         * name : File1
-         */
-
         private String key;
         private String type;
         private String permissions;
@@ -34,7 +22,7 @@ public class FileModel {
         private String user;
         private String group;
         private String size;
-        private String modify_time;
+        private String modifyTime;
         private String name;
 
         public String getKey() {
@@ -93,12 +81,12 @@ public class FileModel {
             this.size = size;
         }
 
-        public String getModify_time() {
-            return modify_time;
+        public String getModifyTime() {
+            return modifyTime;
         }
 
-        public void setModify_time(String modify_time) {
-            this.modify_time = modify_time;
+        public void setModifyTime(String modifyTime) {
+            this.modifyTime = modifyTime;
         }
 
         public String getName() {

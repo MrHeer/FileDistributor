@@ -1,9 +1,15 @@
 .card {
-    height: 550px;
+  overflow: auto;
+  height: 100%;
+  :global {
+    .ant-card-body {
+      overflow: auto;
+    }
+  }
 }
 
 .override-ant-list {
-    :global(.ant-list-item-content) {
-        display: list-item;
-    }
+  :global(.ant-list-item-content) {
+    display: list-item;
+  }
 }

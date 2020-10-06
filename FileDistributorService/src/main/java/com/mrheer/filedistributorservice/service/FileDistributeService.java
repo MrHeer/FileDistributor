@@ -79,10 +79,10 @@ public class FileDistributeService {
     public DistributeStatusModel distribute(DistributeModel data) {
         DistributeStatusModel distributeStatusModel = new DistributeStatusModel();
         distributeStatusModel.setDistributeStatus(Status.SUCCESS);
-        distributeStatusModel.setSelectedHost(data.getSelectedHost());
+        distributeStatusModel.setSelectedHosts(data.getSelectedHosts());
 
         // check form data
-        if (data.getRemotePath().isEmpty() || data.getFileList().isEmpty() || data.getSelectedHost().isEmpty()) {
+        if (data.getRemotePath().isEmpty() || data.getFileList().isEmpty() || data.getSelectedHosts().isEmpty()) {
             distributeStatusModel.setDistributeStatus(Status.ERROR);
             return distributeStatusModel;
         }
@@ -94,7 +94,7 @@ public class FileDistributeService {
         }
 
         // distribute the files to host
-        for (SelectedHost hostInfo : data.getSelectedHost()) {
+        for (SelectedHost hostInfo : data.getSelectedHosts()) {
             // only distribute not success host
             if (!hostInfo.getStatus().equalsIgnoreCase(Status.SUCCESS)) {
                 try {
