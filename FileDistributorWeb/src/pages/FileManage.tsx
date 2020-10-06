@@ -49,7 +49,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   const { fileData, hostData = [], loading = true, dispatch } = props;
 
   const [selectedFileKeys, setSelectedFileKeys] = useState<ReactText[]>([]);
-  const [hostID, setHostID] = useState("");
+  const [hostId, setHostId] = useState("");
   const [remotePath, setRemotePath] = useState("");
   const [keyword, setKeyword] = useState("");
 
@@ -60,14 +60,14 @@ const FileManage: FC<FileManageProps> = (props) => {
       type: "hostData/fetch",
       callback: (hosts: Host[]) => {
         if (hosts.length > 0) {
-          setHostID(hosts[0].key);
+          setHostId(hosts[0].key);
         }
       },
     });
   };
 
   const onQueryFile = (data: {
-    hostID: string;
+    hostId: string;
     remotePath: string;
     keyword: string;
   }) => {
@@ -78,7 +78,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   };
 
   const onDeleteFile = (data: {
-    hostID: string;
+    hostId: string;
     remotePath: string;
     keyword: string;
     files: ReactText[];
@@ -103,7 +103,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   // query file data
   const handleFilesQuery = () => {
     const data = {
-      hostID: hostID,
+      hostId: hostId,
       remotePath: remotePath,
       keyword: keyword,
     };
@@ -111,7 +111,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   };
 
   const handleSelectChange = (value: string) => {
-    setHostID(value);
+    setHostId(value);
   };
 
   const handleRemotePathChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +127,7 @@ const FileManage: FC<FileManageProps> = (props) => {
     var newPath = `${remotePath}/${record.name}`;
     newPath = newPath.replace("//", "/");
     const data = {
-      hostID: hostID,
+      hostId: hostId,
       remotePath: newPath,
       keyword: keyword,
     };
@@ -138,7 +138,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   // delete you selected rows
   const onClickDelete = () => {
     const data = {
-      hostID,
+      hostId,
       remotePath,
       keyword,
       files: selectedFileKeys,
@@ -160,7 +160,7 @@ const FileManage: FC<FileManageProps> = (props) => {
   // delete one row
   const handleDelete = (record: FileModel) => {
     const data = {
-      hostID,
+      hostId,
       keyword,
       remotePath,
       files: [record.name],
@@ -174,7 +174,7 @@ const FileManage: FC<FileManageProps> = (props) => {
     let newPath = newPaths.join("/");
     newPath = newPath.replace("//", "/");
     const data = {
-      hostID: hostID,
+      hostId: hostId,
       remotePath: newPath,
       keyword: keyword,
     };
@@ -206,7 +206,7 @@ const FileManage: FC<FileManageProps> = (props) => {
       width: 450,
       render: (_text, record) => {
         const params = {
-          hostID: hostID,
+          hostId: hostId,
           remotePath: remotePath,
           fileName: record.name,
         };
@@ -244,18 +244,16 @@ const FileManage: FC<FileManageProps> = (props) => {
       title: formatMessage({ id: "file_size" }),
       key: "size",
       dataIndex: "size",
-      width: 250,
     },
     {
       title: formatMessage({ id: "modify_time" }),
       key: "modifyTime",
       dataIndex: "modifyTime",
-      width: 400,
     },
     {
       title: formatMessage({ id: "action" }),
       key: "action",
-      width: 160,
+      width: 120,
       render: (_text, record) => (
         <span>
           <Popconfirm
@@ -282,7 +280,7 @@ const FileManage: FC<FileManageProps> = (props) => {
                 style={{ width: "100%" }}
                 placeholder={formatMessage({ id: "chose_host" })}
                 onChange={handleSelectChange}
-                value={hostID}
+                value={hostId}
                 options={hostData.map((host) => ({
                   key: host.key,
                   value: host.key,
@@ -320,7 +318,7 @@ const FileManage: FC<FileManageProps> = (props) => {
         </Col>
         <Col span={4}>
           <Row justify="end">
-            <Col span={4}>
+            <Col>
               <Button onClick={handleFilesQuery}>
                 <ReloadOutlined />
                 <FormattedMessage id="reload" />

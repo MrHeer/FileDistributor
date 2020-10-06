@@ -53,7 +53,6 @@ const ModalForm: FC<FormProps> = (props) => {
       title={title}
       onCancel={() => {
         onCancel();
-        form.resetFields();
       }}
       onOk={() => {
         form
@@ -155,7 +154,6 @@ const ModalForm: FC<FormProps> = (props) => {
             form
               .validateFields()
               .then((values) => {
-                form.resetFields();
                 onTest(({
                   ...values,
                   hostId: formData.hostId,
@@ -279,24 +277,21 @@ const HostManage: FC<HostManageProps> = (props) => {
       key: "groupName",
       dataIndex: "groupName",
       sorter: (a, b) => (a.groupName > b.groupName ? 1 : -1),
-      width: 350,
     },
     {
       title: formatMessage({ id: "host_name" }),
       key: "hostName",
       dataIndex: "hostName",
-      width: 350,
     },
     {
       title: formatMessage({ id: "ip_address" }),
       key: "ipAddress",
       dataIndex: "ipAddress",
-      width: 400,
     },
     {
       title: formatMessage({ id: "action" }),
       key: "action",
-      width: 160,
+      width: 120,
       render: (text, record) => (
         <span>
           <Popconfirm

@@ -28,11 +28,11 @@ public class HostManageController {
     @RequestMapping(value = "/addHost", method = RequestMethod.POST)
     public HostModel addHost(@RequestBody Map<String, String> reqMap) {
         HostEntity hostEntity = new HostEntity();
-        hostEntity.setGroupName(reqMap.get("group_name"));
-        hostEntity.setHostName(reqMap.get("host_name"));
-        hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setGroupName(reqMap.get("groupName"));
+        hostEntity.setHostName(reqMap.get("hostName"));
+        hostEntity.setIpAddress(reqMap.get("ipAddress"));
         hostEntity.setPort(reqMap.get("port"));
-        hostEntity.setUserName(reqMap.get("user_name"));
+        hostEntity.setUserName(reqMap.get("userName"));
         hostEntity.setPassword(reqMap.get("password"));
         return hostManageService.save(hostEntity);
     }
@@ -40,7 +40,7 @@ public class HostManageController {
     @RequestMapping(value = "/deleteHost", method = RequestMethod.POST)
     public HostModel deleteHost(@RequestBody Map<String, ArrayList<String>> reqMap) {
         List<Long> list = new ArrayList<>();
-        for (Object value : reqMap.get("hostID")) {
+        for (Object value : reqMap.get("hostId")) {
             list.add(Long.valueOf((String) value));
         }
         return hostManageService.delete(list);
@@ -49,12 +49,12 @@ public class HostManageController {
     @RequestMapping(value = "/editHost", method = RequestMethod.POST)
     public HostModel editHost(@RequestBody Map<String, String> reqMap) {
         HostEntity hostEntity = new HostEntity();
-        hostEntity.setId(Long.valueOf(reqMap.get("host_id")));
-        hostEntity.setGroupName(reqMap.get("group_name"));
-        hostEntity.setHostName(reqMap.get("host_name"));
-        hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setId(Long.valueOf(reqMap.get("hostId")));
+        hostEntity.setGroupName(reqMap.get("groupName"));
+        hostEntity.setHostName(reqMap.get("hostName"));
+        hostEntity.setIpAddress(reqMap.get("ipAddress"));
         hostEntity.setPort(reqMap.get("port"));
-        hostEntity.setUserName(reqMap.get("user_name"));
+        hostEntity.setUserName(reqMap.get("userName"));
         hostEntity.setPassword(reqMap.get("password"));
         return hostManageService.save(hostEntity);
     }
@@ -62,11 +62,11 @@ public class HostManageController {
     @RequestMapping(value = "/testHost", method = RequestMethod.POST)
     public StatusModel testHost(@RequestBody Map<String, String> reqMap) {
         HostEntity hostEntity = new HostEntity();
-        hostEntity.setGroupName(reqMap.get("group_name"));
-        hostEntity.setHostName(reqMap.get("host_name"));
-        hostEntity.setIpAddress(reqMap.get("ip_address"));
+        hostEntity.setGroupName(reqMap.get("groupName"));
+        hostEntity.setHostName(reqMap.get("hostName"));
+        hostEntity.setIpAddress(reqMap.get("ipAddress"));
         hostEntity.setPort(reqMap.get("port"));
-        hostEntity.setUserName(reqMap.get("user_name"));
+        hostEntity.setUserName(reqMap.get("userName"));
         hostEntity.setPassword(reqMap.get("password"));
         return hostManageService.testHost(hostEntity);
     }

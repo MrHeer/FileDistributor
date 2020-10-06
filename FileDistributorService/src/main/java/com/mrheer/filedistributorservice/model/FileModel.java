@@ -15,18 +15,6 @@ public class FileModel {
     }
 
     public static class FileDataBean {
-        /**
-         * key : 1
-         * type : -
-         * permissions : r-x r-x r-x
-         * numbers : 1
-         * user : root
-         * group : root
-         * size : 1M
-         * modify_time : 2019-03-23 15:32:40
-         * name : File1
-         */
-
         private String key;
         private String type;
         private String permissions;

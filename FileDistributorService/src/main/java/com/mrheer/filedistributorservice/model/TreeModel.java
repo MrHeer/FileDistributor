@@ -15,12 +15,6 @@ public class TreeModel {
     }
 
     public static class TreeDataBean {
-        /**
-         * title : Group-0
-         * key : G-0
-         * children : [{"title":"Host-0","key":"H-0"},{"title":"Host-1","key":"H-1"},{"title":"Host-2","key":"H-2"}]
-         */
-
         private String title;
         private String key;
         private List<ChildrenBean> children;

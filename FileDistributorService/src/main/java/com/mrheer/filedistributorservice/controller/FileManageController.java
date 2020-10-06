@@ -21,7 +21,7 @@ public class FileManageController {
 
     @RequestMapping(value = "/getFileData", method = RequestMethod.GET)
     public FileModel getFileData(
-            @RequestParam("hostID") Long hostID,
+            @RequestParam("hostId") Long hostID,
             @RequestParam("remotePath") String remotePath,
             @RequestParam("keyword") String keyword) {
         return fileManageService.getFileModel(hostID, remotePath, keyword);
@@ -29,7 +29,7 @@ public class FileManageController {
 
     @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
     public FileModel deleteFile(@RequestBody Map<String, Object> reqMap) {
-        Long hostID = Long.valueOf((String) reqMap.get("hostID"));
+        Long hostID = Long.valueOf((String) reqMap.get("hostId"));
         String remotePath = (String) reqMap.get("remotePath");
         String keyword = (String) reqMap.get("keyword");
         List<String> fileList = (List<String>) reqMap.get("files");
@@ -39,7 +39,7 @@ public class FileManageController {
 
     @RequestMapping(value = "/download", method = RequestMethod.GET)
     public ResponseEntity<Resource> downloadFile(
-            @RequestParam("hostID") Long hostID,
+            @RequestParam("hostId") Long hostID,
             @RequestParam("remotePath") String remotePath,
             @RequestParam("fileName") String fileName) {
         InputStream inputStream = fileManageService.download(hostID, remotePath, fileName);
